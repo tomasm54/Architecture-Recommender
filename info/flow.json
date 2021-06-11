@@ -1,0 +1,67 @@
+[
+  {
+    "topic_id": "proceso_scrum",
+    "type": "simple",
+    "utters": [
+      "utter_proceso_scrum"
+    ]
+  },
+  {
+    "topic_id": "product_backlog",
+    "type": "simple",
+    "utters": [
+      "utter_product_backlog"
+    ]
+  },
+  {
+    "topic_id": "product_owner",
+    "type": "simple",
+    "utters": [
+      "utter_product_owner"
+    ]
+  },
+  {
+    "topic_id": "epica",
+    "type": "simple",
+    "utters": [
+      "utter_epica"
+    ]
+  },
+  {
+    "topic_id": "scrum_master",
+    "type": "simple",
+    "utters": [
+      "utter_scrum_master"
+    ]
+  },
+  {
+    "topic_id": "sprint_backlog",
+    "type": "simple",
+    "utters": [
+      "utter_sprint_backlog"
+    ]
+  },
+  {
+    "topic_id": "disenio_backlog",
+    "type": "simple",
+    "utters": [
+      "utter_disenio_backlog"
+    ],
+    "sub_topics": [
+      {
+        "topic_id": "user_story",
+        "type": "simple",
+        "utters": [
+          "utter_user_story"
+        ]
+      },
+      {
+        "topic_id": "tarea",
+        "type": "simple",
+        "utters": [
+          "utter_tarea"
+        ]
+      }
+    ]
+  }
+]
