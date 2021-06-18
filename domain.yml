@@ -7,33 +7,12 @@ intents:
   - greet
   - goodbye
   - no_entiendo
+  - explicame_tema
+  - dame_ejemplo
+  - change_current_flow
 
-  # ---Introduccion---
-  - proceso_scrum
-
-  # ---ProductBacklog---
-  - product_backlog
-  - product_owner
-  - epica
-
-  # ---SprintPlanning---
-  - scrum_master
-  - sprint_backlog
-  - disenio_backlog
-  - user_story
-  - tarea
-
-  # ---SprintDesarrollo---
-  - development_team
-  - daily_meeting
-  - scrum_board
-
-  # ---SprintFin---
-  - sprint_review
-  - increment
-  - burndown_chart
-  - sprint_retrospective
-
+entities:
+  - tema
 responses:
   # ---Generales---
 
@@ -49,6 +28,21 @@ responses:
 
   utter_start_tour:
     - text: "Genial! Por favor acompáñame al hall así arrancamos el tour."
+  
+  utter_example:
+    - text: "jajajaj anduvo"
+  
+  utter_sin_ejemplos:
+    - text: "no hay mas cra"
+
+  utter_cross_examine_jump_global:
+    - text: "Esto es jump global"
+  
+  utter_cross_examine_jump_sequential:
+    - text: "Esto es jump secuecial"
+  
+  utter_cross_examine_example:
+    - text: "queres ejemple o expl"
 
   # ---Introduccion---
 

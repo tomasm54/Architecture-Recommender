@@ -11,6 +11,9 @@
     "type": "simple",
     "utters": [
       "utter_product_backlog"
+    ],
+    "examples": [
+      "utter_example"
     ]
   },
   {

@@ -22,7 +22,7 @@ class Topic:
         if raw_topic.get("examples")is None:
             examples = []
         else:
-            exampĺes = raw_topic.get("examples")
+            examples = raw_topic.get("examples")
         if raw_topic.get("sub_topics")is None:
             subtopics = []
         else:
@@ -37,7 +37,7 @@ class Topic:
             self,
             topic_id: str,
             utters_explanations: List[str],
-            examples: Optional[List["Example"]] = None,
+            examples: Optional[List[str]] = None,
             sub_topics: Optional[List["Topic"]] = None
     ):
         """Constructor.
@@ -60,7 +60,7 @@ class Topic:
         # Default detail level is the middle one.
         self._detail_level = int(len(utters_explanations) / 2)
         self.is_explained = False
-
+        
         self._examples = [] if examples is None else examples
         self._current_example = 0
 
@@ -69,8 +69,6 @@ class Topic:
 
     def get(self) -> Dict[str, "Topic"]:
         topics = {self._id: self}
-        for example in self._examples:
-            topics.update(example.get())
         for topic in self._sub_topics:
             topics.update(topic.get())
         return topics
@@ -86,7 +84,19 @@ class Topic:
         """
         if mark_as_explained:
             self.is_explained = True
+        if self._detail_level>=len(self._utters_explanations):
+            self._detail_level=0
         return self._utters_explanations[self._detail_level]
+
+
+    def get_example(self) -> str:
+        if self._current_example < len(self._examples):
+            example = self._examples[self._current_example]
+            self._current_example+=1
+            return example
+        else:
+            self._current_example=0
+            return "utter_sin_ejemplos"
 
     def next(self) -> Union["Topic", None]:
         """Returns the next topic to explain.
@@ -99,11 +109,6 @@ class Topic:
         """
         if not self.is_explained:
             return self
-
-        if self._current_example < len(self._examples):
-            example = self._examples[self._current_example]
-            self._current_example += 1
-            return example
 
         if self._current_sub_topic < len(self._sub_topics):
             topic = self._sub_topics[self._current_sub_topic]
@@ -120,10 +125,14 @@ class Topic:
         self.is_explained = False
         self._current_example = 0
         self._current_sub_topic = 0
-        for example in self._examples:
-            example.restart()
         for topic in self._sub_topics:
             topic.restart()
+    
+    def get_id(self)->str:
+        return self._id
+    
+    def set_explained(self, explained : bool):
+        self.is_explained=explained
 
     @property
     def repeat(self) -> str:
