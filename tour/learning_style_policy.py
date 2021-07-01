@@ -28,7 +28,7 @@ from rasa.core.constants import MEMOIZATION_POLICY_PRIORITY
 
 from tour import iterator
 from tour.topics import Topic, parse_topic
-
+from tour.concrete_iterator import GlobalIterator, SequentialIterator, NeutralIterator
 logger = logging.getLogger(__name__)
 
 # temporary constants to support back compatibility
@@ -74,16 +74,17 @@ def create_iterator(
     with open(path_intents_to_topics) as file:
         intents_to_topics = json.load(file)
     if learning == "global":
-        return iterator.GlobalIterator(intents_to_topics, flow)
+        return GlobalIterator(intents_to_topics, flow)
     if learning == "sequential":
-        return iterator.SequentialIterator(intents_to_topics, flow)
+        return SequentialIterator(intents_to_topics, flow)
     if learning == "neutral":
-        return iterator.NeutralIterator(intents_to_topics, flow)    
+        return NeutralIterator(intents_to_topics, flow)    
     
 def functions_builder() -> node.Node:
         node1 = node.DefaultNode(None)
         node1 = node.NodeActionListen(node1,AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),NotCriterion(EqualAction("action_listen"))))
         node1 = node.NodeNext(node1,AndCriterion(AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),EqualAction("action_listen")),EqualIntent("affirm")))
+        node1 = node.NodeGet(node1,AndCriterion(AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),EqualAction("action_listen")),EqualIntent("explicame_tema")))
         return node1
 
 class LearningStylePolicy(Policy):

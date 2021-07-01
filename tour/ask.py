@@ -2,7 +2,7 @@ import abc
 from tour.topics import Topic
 from typing import Dict, List
 
-from tour.iterator import GlobalIterator, NeutralIterator, SequentialIterator
+from tour.iterator import Iterator
 from tour.visitor import Visitor
 from random import randint
 
@@ -11,7 +11,7 @@ class Ask(Visitor):
     def __init__(self) -> None:
         super().__init__()
 
-    def visit_sequential(self, it : SequentialIterator) -> str:
+    def visit_sequential(self, it : Iterator) -> str:
         respond = "utter_sin_question"
         while respond=="utter_sin_question":
             it.restart()
@@ -20,8 +20,8 @@ class Ask(Visitor):
             respond=it.get_to_explain()[-1].get_question()
         return respond
     
-    def visit_global(self, it : GlobalIterator) -> str:
+    def visit_global(self, it : Iterator) -> str:
         raise NotImplementedError
     
-    def visit_neutral(self, it : NeutralIterator) -> str:
+    def visit_neutral(self, it : Iterator) -> str:
         raise NotImplementedError

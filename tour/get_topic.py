@@ -2,7 +2,7 @@ import abc
 from tour.topics import Topic
 from typing import Dict, List
 
-from tour import iterator
+from tour.iterator import  Iterator
 from tour.visitor import Visitor
 
 class GetTopic(Visitor):
@@ -12,7 +12,7 @@ class GetTopic(Visitor):
         self._jump = jump
         self._example = example
 
-    def visit_sequential(self, it : iterator.SequentialIterator) -> str:
+    def visit_sequential(self, it : Iterator) -> str:
         if it.is_older_topic(Topic(self._topic,[])):
             if it.get_jump() is None:
                 it.set_current_topic(self._topic)
@@ -23,7 +23,7 @@ class GetTopic(Visitor):
             return self.get_topic(it)
 
     
-    def visit_global(self, it : iterator.GlobalIterator) -> str:
+    def visit_global(self, it : Iterator) -> str:
         if not it.is_older_topic(Topic(self._topic,[])) and not it.get_to_explain[-1].get_id() == self._topic:
             if self._jump is None:
                 self._current_topic = self._topic
@@ -33,10 +33,10 @@ class GetTopic(Visitor):
         else:
             return self.get_topic(it)
 
-    def visit_neutral(self, it : iterator.NeutralIterator) -> str:
+    def visit_neutral(self, it : Iterator) -> str:
         return self.get_topic(it)
 
-    def get_topic(self,it : iterator.Iterator) -> str:
+    def get_topic(self,it : Iterator) -> str:
         if it.is_older_topic(Topic(self._topic,[])):
             if self._example == False:
                 it.set_current_topic(self._topic)
