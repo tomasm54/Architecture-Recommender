@@ -53,6 +53,7 @@ nlu:
       - avanza con lo que sigue
       - sigamos el recorrido
       - segui
+      - si es eso
 
   - intent: deny
     examples: |
@@ -64,6 +65,7 @@ nlu:
       - no me convence
       - no creo que sea correcto
       - nada
+      - no es eso
 
   - intent: no_entiendo
     examples: |

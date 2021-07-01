@@ -27,10 +27,15 @@ class Topic:
             subtopics = []
         else:
             subtopics = [parse_topic(raw_topic) for raw_topic in raw_topic["sub_topics"]]
+        if raw_topic.get("questions")is None:
+            questions = []
+        else:
+            questions = raw_topic.get("questions")
         return Topic(raw_topic["topic_id"],
                      raw_topic["utters"],
                      examples,
-                     subtopics)
+                     subtopics,
+                     questions)
 
     # noinspection PyTypeChecker
     def __init__(
@@ -38,7 +43,8 @@ class Topic:
             topic_id: str,
             utters_explanations: List[str],
             examples: Optional[List[str]] = None,
-            sub_topics: Optional[List["Topic"]] = None
+            sub_topics: Optional[List["Topic"]] = None,
+            questions: Optional[List[str]] = None
     ):
         """Constructor.
 
@@ -67,11 +73,20 @@ class Topic:
         self._sub_topics = [] if sub_topics is None else sub_topics
         self._current_sub_topic = 0
 
+        self._questions = [] if questions is None else questions
+        self._current_question = 0
+
     def get(self) -> Dict[str, "Topic"]:
         topics = {self._id: self}
         for topic in self._sub_topics:
             topics.update(topic.get())
         return topics
+
+    def set_current_example(self, example : int):
+        self._current_example=example
+    
+    def get_current_example(self) -> int:
+        return self._current_example
 
     def get_explanation(self, mark_as_explained: bool = True) -> str:
         """Explains the topic. Marks the topic as explained.
@@ -97,6 +112,15 @@ class Topic:
         else:
             self._current_example=0
             return "utter_sin_ejemplos"
+    
+    def get_question(self) -> str:
+        if self._current_question < len(self._questions):
+            question = self._questions[self._current_question]
+            self._current_question+=1
+            return question
+        else:
+            self._current_question=0
+            return "utter_sin_question"
 
     def next(self) -> Union["Topic", None]:
         """Returns the next topic to explain.

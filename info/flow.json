@@ -4,7 +4,11 @@
     "type": "simple",
     "utters": [
       "utter_proceso_scrum"
-    ]
+    ],
+    "questions": [
+      "utter_cross_examine_tema_proceso_scrum", 
+      "deny" 
+    ] 
   },
   {
     "topic_id": "product_backlog",
@@ -14,35 +18,55 @@
     ],
     "examples": [
       "utter_example"
-    ]
+    ],
+    "questions": [
+      "utter_cross_examine_tema_product_backlog", 
+      "deny" 
+    ] 
   },
   {
     "topic_id": "product_owner",
     "type": "simple",
     "utters": [
       "utter_product_owner"
-    ]
+    ],
+    "questions": [
+      "utter_cross_examine_tema_product_owner", 
+      "affirm" 
+    ] 
   },
   {
     "topic_id": "epica",
     "type": "simple",
     "utters": [
       "utter_epica"
-    ]
+    ],
+    "questions": [
+      "utter_cross_examine_tema_epic", 
+      "affirm" 
+    ] 
   },
   {
     "topic_id": "scrum_master",
     "type": "simple",
     "utters": [
       "utter_scrum_master"
-    ]
+    ],
+    "questions": [
+      "utter_cross_examine_tema_scrum_master", 
+      "affirm" 
+    ] 
   },
   {
     "topic_id": "sprint_backlog",
     "type": "simple",
     "utters": [
       "utter_sprint_backlog"
-    ]
+    ],
+    "questions": [
+      "utter_cross_examine_tema_sprint_backlog", 
+      "affirm" 
+    ] 
   },
   {
     "topic_id": "disenio_backlog",
@@ -65,6 +89,10 @@
           "utter_tarea"
         ]
       }
-    ]
+    ],
+    "questions": [
+      "utter_cross_examine_tema_disenio_backlog", 
+      "deny" 
+    ] 
   }
 ]

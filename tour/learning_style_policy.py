@@ -3,6 +3,8 @@ from datetime import datetime
 import base64
 import json
 import logging
+from tour import node
+from tour.criterion import AndCriterion, Criterion, EqualAction, EqualIntent, EqualPenultimateIntent, NotCriterion
 from rasa.shared.core import domain
 
 from tqdm import tqdm
@@ -77,13 +79,19 @@ def create_iterator(
         return iterator.SequentialIterator(intents_to_topics, flow)
     if learning == "neutral":
         return iterator.NeutralIterator(intents_to_topics, flow)    
+    
+def functions_builder() -> node.Node:
+        node1 = node.DefaultNode(None)
+        node1 = node.NodeActionListen(node1,AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),NotCriterion(EqualAction("action_listen"))))
+        node1 = node.NodeNext(node1,AndCriterion(AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),EqualAction("action_listen")),EqualIntent("affirm")))
+        return node1
 
 class LearningStylePolicy(Policy):
     last_action_timestamp = 0
     answered = False
     _it = Iterator
     learning_style_iterators = {"sequential": iterator.Iterator, "global": iterator.Iterator}
-
+    
     def __init__(
             self,
             featurizer: Optional[TrackerFeaturizer] = None,
@@ -100,7 +108,10 @@ class LearningStylePolicy(Policy):
         self.learning_style_iterators["sequential"] = create_iterator(r"info/flow.json",r"info/intents_to_topics.json","sequential")
         self.learning_style_iterators["global"] = create_iterator(r"info/flow.json",r"info/intents_to_topics.json","global")
         self._it=create_iterator(r"info/flow.json",r"info/intents_to_topics.json","neutral") 
-    
+        self._criterion_learning = AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),EqualAction("action_listen"))
+        #to do script
+        self._functions = functions_builder()
+
     def train(
             self,
             training_trackers: List[TrackerWithCachedStates],
@@ -113,8 +124,7 @@ class LearningStylePolicy(Policy):
             t
             for t in training_trackers
             if not hasattr(t, "is_augmented") or not t.is_augmented
-        ]
-        print(self._it.next()) 
+        ] 
         stories = {}
         amount_intents = {}
         for s in training_trackers:
@@ -162,108 +172,27 @@ class LearningStylePolicy(Policy):
             interpreter: NaturalLanguageInterpreter,
             **kwargs: Any,
     ) -> PolicyPrediction:
-
         intent = tracker.latest_message.intent
-        if len(tracker.as_dialogue().events) > 5:
-            penultimate_intent = str(tracker.as_dialogue().events[-4])
-        else:
-            penultimate_intent = None
-        entity = next(tracker.get_latest_entity_values("tema"), None)
-        # If the last thing rasa did was listen to a user message, we need to
-        # send back a response.
-        if penultimate_intent is None or not penultimate_intent.find("utter_cross_examine")!=-1 :    
-            if tracker.latest_action_name == "action_listen":
-                if tracker.latest_action_name == "greet":
-                    return self._prediction(confidence_scores_for(
-                            "utter_greet", 1.0, domain))
-                print(intent["name"])
-                print(intent)
-                print(self.usertype)
-                for s in self.usertype:
-                    self.usertype.update({s: self.usertype.get(s) + self.story_profiles.get(s).get(intent["name"])})
-                aux_ls = 0.0
-                new_ls = ''
-                for s in self.usertype:
-                    if aux_ls < self.usertype.get(s) and self.usertype.get(s) > LEARNING_STYLE_CONFIDENCE:
-                        aux_ls = self.usertype.get(s)
-                        new_ls = s
-                if new_ls!=self.learning_style and new_ls!='':
-                    self.learning_style=new_ls
-                    self.learning_style_iterators[new_ls].jump_to_topic(self._it.get_last_topic())
-                    self._it=self.learning_style_iterators[new_ls]
-                # The user wants to continue with next explanation.
-                if intent["name"] == "affirm":
-                    response = self._it.next()
-                    move_to_a_location(response)
-                    if response == "utter_end_tour":
-                        self._it.restart()
-                    return self._prediction(confidence_scores_for(
-                        response, 1.0, domain
-                    ))
-                print(entity)
-                # The user didn't understand and needs a re explanation.
-                if (intent["name"] == "no_entiendo" and entity is None) or intent["name"] == "deny":
-                    return self._prediction(confidence_scores_for(
-                        self._it.repeat(), 1.0, domain
-                    ))
-                
-                # The user wants an explanation of a specific topic that was already explained
-                if intent["name"] == "no_entiendo" and self._it.in_tour(entity):
-                    return self._prediction(confidence_scores_for(
-                        self._it.get(entity), 1.0, domain
-                    ))
-                # The user wants an explanation of a specific topic.
-                
-                if intent["name"] == "explicame_tema" and self._it.in_tour(entity):
-                    return self._prediction(confidence_scores_for(
-                        self._it.get(entity), 1.0, domain
-                    ))
-            
-                if intent["name"] == "dame_ejemplo" and self._it.in_tour(entity):
-                    return self._prediction(confidence_scores_for(
-                        self._it.example(), 1.0, domain
-                    ))        
-
-                # Intent not related to the tour. Other policies will predict
-                # correct action to execute.
-                return self._prediction(self._default_predictions(domain))
-            # If rasa latest action isn't "action_listen", it means the last thing
-            # rasa did was send a response, so now we need to listen again so the
-            # user can talk to us.
-            return self._prediction(confidence_scores_for(
-                "action_listen", 1.0, domain
-            ))
-        else:
-            if penultimate_intent == "utter_cross_examine_example":
-                if intent["name"] == "dame_ejemplo":
-                    return self._prediction(confidence_scores_for(
-                        self._it.get(self._it._current_topic,example=True), 1.0, domain
-                    ))
-                else:
-                    return self._prediction(confidence_scores_for(
-                        self._it.get(self._it._current_topic,example=False), 1.0, domain
-                    ))
-            if penultimate_intent.find("utter_cross_examine_jump")!=-1:
-                if intent["name"] == "change_current_flow":
-                    self._it.set_jump(True)
-                    return self._prediction(confidence_scores_for(
-                        self._it.get(self._it._current_topic), 1.0, domain
-                    ))
-                else:
-                    self._it.set_jump(False)
-                    return self._prediction(confidence_scores_for(
-                        self._it.get(self._it._current_topic), 1.0, domain
-                    ))
-
+        if self._criterion_learning.check(tracker):
+            for s in self.usertype:
+                self.usertype.update({s: self.usertype.get(s) + self.story_profiles.get(s).get(intent["name"])})
+            aux_ls = 0.0
+            new_ls = ''
+            for s in self.usertype:
+                if aux_ls < self.usertype.get(s) and self.usertype.get(s) > LEARNING_STYLE_CONFIDENCE:
+                    aux_ls = self.usertype.get(s)
+                    new_ls = s
+            print(self.usertype)
+            if new_ls!=self.learning_style and new_ls!='':
+                self.learning_style=new_ls
+                self.learning_style_iterators[new_ls].jump_to_topic(self._it.get_last_topic())
+                self._it=self.learning_style_iterators[new_ls]
         
-        #response = self.learning_style_answers[self.learning_style].answer(tracker, domain, interpreter)
-        #self.answered = True
-        # print('Respuesta del bot a los: '+str(self.last_action_timestamp))
-        # print(tracker.latest_message.parse_data)
-        # print('Mensaje del usuario a los: '+tracker.latest_message.parse_data['time_stamp'])
-        # self.last_action_timestamp = datetime.now()
-        #return self._prediction(confidence_scores_for(response, 1.0, domain))
+        return self._prediction(confidence_scores_for(self._functions.next(self._it, tracker), 1.0, domain))
+                 
 
+        #return self._prediction(confidence_scores_for("action_listen", 1.0, domain))   
+    
     def _metadata(self) -> Dict[Text, Any]:
         return {
             "priority": self.priority,

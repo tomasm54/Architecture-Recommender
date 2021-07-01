@@ -1,4 +1,5 @@
 import abc
+#from tour import visitor
 from typing import Dict, List
 
 from tour.topics import Topic
@@ -24,22 +25,18 @@ class Iterator(metaclass=abc.ABCMeta):
     def next(self) -> str:
         raise NotImplementedError
 
+#    @abc.abstractmethod
+#    def accept(self, visitor : visitor.Visitor) -> str:
+#        raise NotImplementedError
+
     def get_current_topic(self)-> str:
         return self._current_topic
 
-    def get(self, topic: str , jump : bool = False, example : bool = None ) -> str:
-        if self.is_older_topic(Topic(topic,[])):
-            if example is None:
-                self._current_topic = topic
-                return "utter_cross_examine_example"
-        if topic not in self._intents_to_topics:
-            return "action_topic_not_recognized"
-        if jump:
-            self.jump_to_topic(Topic(topic,[]))
-        if example is not None and example:
-            return self._intents_to_topics[topic].get_example()
+    def set_current_topic(self, topic : str):
+        self._current_topic = topic
 
-        return self._intents_to_topics[topic].get_explanation()
+    def get_jump(self) -> bool:
+        return self._jump
 
     def set_jump(self, jump : bool):
         self._jump = jump
@@ -47,21 +44,18 @@ class Iterator(metaclass=abc.ABCMeta):
     def repeat(self) -> str:
         return self._to_explain[-1].repeat
 
+    def get_to_explain(self) -> List:
+        return self._to_explain.copy()
+
+    def get_intents_to_topic(self) -> Dict:
+        return self._intents_to_topics.copy()
+
     def is_older_topic(self, topic : Topic)-> bool:
         if topic in self._to_explain:
             return False
         else:
             return True
 
-    def example(self, topic : str = None) -> str:
-        if topic is None:
-            return self._to_explain[-1].get_example()
-        else:
-            if topic not in self._intents_to_topics:
-                return "action_topic_not_recognized"
-            else:
-                return  self._intents_to_topics[topic].get_example()
-    
     def restart(self):
         self._to_explain = [topic for topic in reversed(self._flow)]
         for topic in self._to_explain:
@@ -102,21 +96,13 @@ class SequentialIterator(Iterator):
                 self._to_explain.append(next_to_explain)
 
         if len(self._to_explain) == 0:
-            return "utter_end_tour"
+            return "utter_ask"
 
         return self._to_explain[-1].get_explanation()
     
-    def get(self, topic: str, jump : bool = False , example : bool = None) -> str:
-        if self.is_older_topic(Topic(topic,[])):
-            if self._jump is None:
-                self._current_topic = topic
-                return "utter_cross_examine_jump_sequential"
-            else:
-                return super().get(topic,self._jump,example = example)
-        else:
-            return super().get(topic,example = example)
-
-
+#    def accept(self, visitor: visitor.Visitor) -> str:
+#        return visitor.visit_sequential(self)
+    
 
 class GlobalIterator(Iterator):
 
@@ -135,23 +121,13 @@ class GlobalIterator(Iterator):
         if self._to_explain[-1].is_explained:
             self._to_explain.pop()
         if len(self._to_explain) == 0:
-            return "utter_end_tour"
+            return "utter_ask"
 
         return self._to_explain[-1].get_explanation()
     
-    def get(self, topic: str, jump : bool = False,  example : bool = None) -> str:
-        print("llegue")
-        if not self.is_older_topic(Topic(topic,[])) and not self._to_explain[-1].get_id() == topic:
-            print("entre al if")
-            if self._jump is None:
-                print("hice todo")
-                self._current_topic = topic
-                return "utter_cross_examine_jump_global"
-            else:
-                return super().get(topic,jump =self._jump, example = example)
-        else:
-            print("llegue afuera del if")
-            return super().get(topic, example = example)
+#    def accept(self, visitor: visitor.Visitor) -> str:
+#        return visitor.visit_global(self)
+    
 
 class NeutralIterator(Iterator):
 
@@ -178,6 +154,9 @@ class NeutralIterator(Iterator):
                 self._to_explain.pop()
 
         if len(self._to_explain) == 0:
-            return "utter_end_tour"
+            return "utter_ask"
 
         return self._to_explain[-1].get_explanation()
+
+#    def accept(self, visitor: visitor.Visitor) -> str:
+#        return visitor.visit_neutral(self)

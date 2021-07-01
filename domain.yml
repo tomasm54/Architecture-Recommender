@@ -30,19 +30,56 @@ responses:
     - text: "Genial! Por favor acompáñame al hall así arrancamos el tour."
   
   utter_example:
-    - text: "jajajaj anduvo"
+    - text: "Ejemplo de Product Backlog"
   
   utter_sin_ejemplos:
-    - text: "no hay mas cra"
+    - text: "No hay mas ejemplos sobre este tema"
+
+  utter_sin_question:
+    - text: "No hay mas preguntas sobre este tema"
 
   utter_cross_examine_jump_global:
-    - text: "Esto es jump global"
+    - text: "Queres que explique desde ese tema y omitamos los temas intermedios o solo te explico ese tema particular"
   
   utter_cross_examine_jump_sequential:
-    - text: "Esto es jump secuecial"
+    - text: "Queres que te explique todo de nuevo apartir de ese tema o solo te explico de nuevo ese tema particular"
   
   utter_cross_examine_example:
-    - text: "queres ejemple o expl"
+    - text: "Queres que te de un ejemplo de este tema o queres que te haga otra explicacion"
+
+  utter_ask:
+    - text: "Bueno ahora vamos con unas preguntas de estos temas para ver cuanto sabes"
+
+  utter_cross_examine_tema_proceso_scrum:
+    - text: "Proceso Scrum es tomar Fernet"
+
+  utter_cross_examine_tema_product_backlog:
+    - text: "Product Backlog es un llavero con tu nombre"
+
+  utter_cross_examine_tema_product_owner:
+    - text: "Product owner es Product owner"
+
+  utter_cross_examine_tema_epic: 
+    - text: "Epica es Epica"
+
+  utter_cross_examine_tema_scrum_master: 
+    - text: "Scrum Master es Scrum Master"
+  
+  utter_cross_examine_tema_sprint_backlog:
+    - text: "Sprint Backlok es Sprint backlog"
+
+  utter_cross_examine_tema_disenio_backlog:
+    - text: "Diseño backlog es jugar al futbol"
+
+  utter_ask_good:
+    - text: "Correcto ahi te va otra"
+
+  utter_ask_bad:
+    - text: "Nono le errraste, es esto en realidad es"
+
+  utter_default:
+    - text: "default"
+  
 
   # ---Introduccion---
 
