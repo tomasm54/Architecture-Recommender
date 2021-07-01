@@ -1,34 +1,24 @@
-from datetime import datetime
-
-import base64
 import json
 import logging
-from tour import node
-from tour.criterion import AndCriterion, Criterion, EqualAction, EqualIntent, EqualPenultimateIntent, NotCriterion
-from rasa.shared.core import domain
+from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeGet, NodeNext
+from tour.chain.criterion import AndCriterion, EqualAction, EqualIntent, EqualPenultimateIntent, NotCriterion
 
-from tqdm import tqdm
 from typing import Iterator, Optional, Any, Dict, List, Text
 
-import rasa.utils.io
-import rasa.shared.utils.io
-from rasa.shared.constants import DOCS_URL_POLICIES
-from rasa.shared.core.domain import State, Domain
+from rasa.shared.core.domain import Domain
 from rasa.shared.core import events
 from rasa.core.featurizers.tracker_featurizers import (
     TrackerFeaturizer,
-    MaxHistoryTrackerFeaturizer,
 )
 from rasa.shared.nlu.interpreter import NaturalLanguageInterpreter
 from rasa.core.policies.policy import Policy, PolicyPrediction, confidence_scores_for
 from rasa.shared.core.trackers import DialogueStateTracker
 from rasa.shared.core.generator import TrackerWithCachedStates
-from rasa.shared.utils.io import is_logging_disabled
-from rasa.core.constants import MEMOIZATION_POLICY_PRIORITY
 
-from tour import iterator
-from tour.topics import Topic, parse_topic
-from tour.concrete_iterator import GlobalIterator, SequentialIterator, NeutralIterator
+from tour.iterator.iterator import Iterator
+from tour.topic.topics import parse_topic
+from tour.iterator.concrete_iterator import GlobalIterator, SequentialIterator, NeutralIterator
+
 logger = logging.getLogger(__name__)
 
 # temporary constants to support back compatibility
@@ -50,6 +40,7 @@ def count_intents_from_stories(s, story_intents):
             count_intents = count_intents + 1
     return count_intents
 
+
 def move_to_a_location(response):
     locations = {
         "utter_start_tour": "tour_scrum_assistant_p1",
@@ -66,9 +57,10 @@ def move_to_a_location(response):
     #                       {"location": locations.get(response),
     #                        "to": "Cristina"})
 
+
 def create_iterator(
         path_flow: str, path_intents_to_topics: str, learning: str
-) -> iterator.Iterator:
+) -> Iterator:
     with open(path_flow) as file:
         flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
     with open(path_intents_to_topics) as file:
@@ -78,21 +70,28 @@ def create_iterator(
     if learning == "sequential":
         return SequentialIterator(intents_to_topics, flow)
     if learning == "neutral":
-        return NeutralIterator(intents_to_topics, flow)    
-    
-def functions_builder() -> node.Node:
-        node1 = node.DefaultNode(None)
-        node1 = node.NodeActionListen(node1,AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),NotCriterion(EqualAction("action_listen"))))
-        node1 = node.NodeNext(node1,AndCriterion(AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),EqualAction("action_listen")),EqualIntent("affirm")))
-        node1 = node.NodeGet(node1,AndCriterion(AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),EqualAction("action_listen")),EqualIntent("explicame_tema")))
-        return node1
+        return NeutralIterator(intents_to_topics, flow)
+
+
+def functions_builder() -> Node:
+    node1 = DefaultNode(None)
+    node1 = NodeActionListen(node1, AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),
+                                                 NotCriterion(EqualAction("action_listen"))))
+    node1 = NodeNext(node1, AndCriterion(
+        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
+        EqualIntent("affirm")))
+    node1 = NodeGet(node1, AndCriterion(
+        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
+        EqualIntent("explicame_tema")))
+    return node1
+
 
 class LearningStylePolicy(Policy):
     last_action_timestamp = 0
     answered = False
     _it = Iterator
-    learning_style_iterators = {"sequential": iterator.Iterator, "global": iterator.Iterator}
-    
+    learning_style_iterators = {"sequential": Iterator, "global": Iterator}
+
     def __init__(
             self,
             featurizer: Optional[TrackerFeaturizer] = None,
@@ -106,11 +105,14 @@ class LearningStylePolicy(Policy):
         self.story_profiles = story_profiles if story_profiles is not None else {}
         self.usertype = usertype if usertype is not None else {}
         self.learning_style = learning_style if learning_style is not None else DEFAULT_LEARNING_STYLE
-        self.learning_style_iterators["sequential"] = create_iterator(r"info/flow.json",r"info/intents_to_topics.json","sequential")
-        self.learning_style_iterators["global"] = create_iterator(r"info/flow.json",r"info/intents_to_topics.json","global")
-        self._it=create_iterator(r"info/flow.json",r"info/intents_to_topics.json","neutral") 
-        self._criterion_learning = AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),EqualAction("action_listen"))
-        #to do script
+        self.learning_style_iterators["sequential"] = create_iterator(r"info/flow.json", r"info/intents_to_topics.json",
+                                                                      "sequential")
+        self.learning_style_iterators["global"] = create_iterator(r"info/flow.json", r"info/intents_to_topics.json",
+                                                                  "global")
+        self._it = create_iterator(r"info/flow.json", r"info/intents_to_topics.json", "neutral")
+        self._criterion_learning = AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),
+                                                EqualAction("action_listen"))
+        # to do script
         self._functions = functions_builder()
 
     def train(
@@ -125,7 +127,7 @@ class LearningStylePolicy(Policy):
             t
             for t in training_trackers
             if not hasattr(t, "is_augmented") or not t.is_augmented
-        ] 
+        ]
         stories = {}
         amount_intents = {}
         for s in training_trackers:
@@ -184,16 +186,15 @@ class LearningStylePolicy(Policy):
                     aux_ls = self.usertype.get(s)
                     new_ls = s
             print(self.usertype)
-            if new_ls!=self.learning_style and new_ls!='':
-                self.learning_style=new_ls
+            if new_ls != self.learning_style and new_ls != '':
+                self.learning_style = new_ls
                 self.learning_style_iterators[new_ls].jump_to_topic(self._it.get_last_topic())
-                self._it=self.learning_style_iterators[new_ls]
-        
-        return self._prediction(confidence_scores_for(self._functions.next(self._it, tracker), 1.0, domain))
-                 
+                self._it = self.learning_style_iterators[new_ls]
 
-        #return self._prediction(confidence_scores_for("action_listen", 1.0, domain))   
-    
+        return self._prediction(confidence_scores_for(self._functions.next(self._it, tracker), 1.0, domain))
+
+        # return self._prediction(confidence_scores_for("action_listen", 1.0, domain))
+
     def _metadata(self) -> Dict[Text, Any]:
         return {
             "priority": self.priority,

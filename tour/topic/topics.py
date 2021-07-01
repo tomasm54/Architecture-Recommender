@@ -14,20 +14,21 @@ class Topic:
 
     Author: Bruno.
     """
+
     def __eq__(self, other):
         return self._id == other._id
-    
+
     @staticmethod
     def from_dict(raw_topic: Dict[str, Any]) -> "Topic":
-        if raw_topic.get("examples")is None:
+        if raw_topic.get("examples") is None:
             examples = []
         else:
             examples = raw_topic.get("examples")
-        if raw_topic.get("sub_topics")is None:
+        if raw_topic.get("sub_topics") is None:
             subtopics = []
         else:
             subtopics = [parse_topic(raw_topic) for raw_topic in raw_topic["sub_topics"]]
-        if raw_topic.get("questions")is None:
+        if raw_topic.get("questions") is None:
             questions = []
         else:
             questions = raw_topic.get("questions")
@@ -66,7 +67,7 @@ class Topic:
         # Default detail level is the middle one.
         self._detail_level = int(len(utters_explanations) / 2)
         self.is_explained = False
-        
+
         self._examples = [] if examples is None else examples
         self._current_example = 0
 
@@ -82,9 +83,9 @@ class Topic:
             topics.update(topic.get())
         return topics
 
-    def set_current_example(self, example : int):
-        self._current_example=example
-    
+    def set_current_example(self, example: int):
+        self._current_example = example
+
     def get_current_example(self) -> int:
         return self._current_example
 
@@ -99,27 +100,26 @@ class Topic:
         """
         if mark_as_explained:
             self.is_explained = True
-        if self._detail_level>=len(self._utters_explanations):
-            self._detail_level=0
+        if self._detail_level >= len(self._utters_explanations):
+            self._detail_level = 0
         return self._utters_explanations[self._detail_level]
-
 
     def get_example(self) -> str:
         if self._current_example < len(self._examples):
             example = self._examples[self._current_example]
-            self._current_example+=1
+            self._current_example += 1
             return example
         else:
-            self._current_example=0
+            self._current_example = 0
             return "utter_sin_ejemplos"
-    
+
     def get_question(self) -> str:
         if self._current_question < len(self._questions):
             question = self._questions[self._current_question]
-            self._current_question+=1
+            self._current_question += 1
             return question
         else:
-            self._current_question=0
+            self._current_question = 0
             return "utter_sin_question"
 
     def next(self) -> Union["Topic", None]:
@@ -151,12 +151,12 @@ class Topic:
         self._current_sub_topic = 0
         for topic in self._sub_topics:
             topic.restart()
-    
-    def get_id(self)->str:
+
+    def get_id(self) -> str:
         return self._id
-    
-    def set_explained(self, explained : bool):
-        self.is_explained=explained
+
+    def set_explained(self, explained: bool):
+        self.is_explained = explained
 
     @property
     def repeat(self) -> str:
@@ -180,6 +180,7 @@ class Topic:
 
     def get_amount_subtopics(self) -> int:
         return self._current_sub_topic
+
 
 class Example(Topic):
     @staticmethod

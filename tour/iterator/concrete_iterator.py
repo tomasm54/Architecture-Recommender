@@ -1,7 +1,8 @@
-from tour.topics import Topic
+from tour.topic.topics import Topic
 from typing import Dict, List
-from tour.iterator import Iterator
-from tour.visitor import Visitor
+from tour.iterator.iterator import Iterator
+from tour.visitor.visitor import Visitor
+
 
 class SequentialIterator(Iterator):
 
@@ -20,15 +21,16 @@ class SequentialIterator(Iterator):
             return "utter_ask"
 
         return self._to_explain[-1].get_explanation()
-    
+
     def accept(self, visitor: Visitor) -> str:
         return visitor.visit_sequential(self)
-    
+
 
 class GlobalIterator(Iterator):
 
     def __init__(self, intents_to_topics: Dict[str, str], flow: List[Topic]):
         super().__init__(intents_to_topics, flow)
+
     """
     Iterates over the conversation flow not entering in the subtopics of the topic
 
@@ -38,6 +40,7 @@ class GlobalIterator(Iterator):
     -------
         Utter associated to the next topic.
     """
+
     def next(self) -> str:
         if self._to_explain[-1].is_explained:
             self._to_explain.pop()
@@ -45,15 +48,16 @@ class GlobalIterator(Iterator):
             return "utter_ask"
 
         return self._to_explain[-1].get_explanation()
-    
+
     def accept(self, visitor: Visitor) -> str:
         return visitor.visit_global(self)
-    
+
 
 class NeutralIterator(Iterator):
 
     def __init__(self, intents_to_topics: Dict[str, str], flow: List[Topic]):
         super().__init__(intents_to_topics, flow)
+
     """
     Iterates over the conversation flow entering only in the first subtopic of the topic
 
@@ -63,9 +67,10 @@ class NeutralIterator(Iterator):
     -------
         Utter associated to the next topic.
     """
+
     def next(self) -> str:
         while len(self._to_explain) > 0 and self._to_explain[-1].is_explained:
-            if self._to_explain[-1].get_amount_subtopics()< 1:
+            if self._to_explain[-1].get_amount_subtopics() < 1:
                 next_to_explain = self._to_explain[-1].next()
                 if next_to_explain is None:
                     self._to_explain.pop()

@@ -1,7 +1,7 @@
 import abc
 from typing import Dict, List
 
-from tour.topics import Topic
+from tour.topic.topics import Topic
 
 
 class Iterator(metaclass=abc.ABCMeta):
@@ -24,16 +24,16 @@ class Iterator(metaclass=abc.ABCMeta):
     def next(self) -> str:
         raise NotImplementedError
 
-    def get_current_topic(self)-> str:
+    def get_current_topic(self) -> str:
         return self._current_topic
 
-    def set_current_topic(self, topic : str):
+    def set_current_topic(self, topic: str):
         self._current_topic = topic
 
     def get_jump(self) -> bool:
         return self._jump
 
-    def set_jump(self, jump : bool):
+    def set_jump(self, jump: bool):
         self._jump = jump
 
     def repeat(self) -> str:
@@ -45,7 +45,7 @@ class Iterator(metaclass=abc.ABCMeta):
     def get_intents_to_topic(self) -> Dict:
         return self._intents_to_topics.copy()
 
-    def is_older_topic(self, topic : Topic)-> bool:
+    def is_older_topic(self, topic: Topic) -> bool:
         if topic in self._to_explain:
             return False
         else:
@@ -55,19 +55,19 @@ class Iterator(metaclass=abc.ABCMeta):
         self._to_explain = [topic for topic in reversed(self._flow)]
         for topic in self._to_explain:
             topic.restart()
-    
+
     def get_last_topic(self) -> Topic:
-        #Returns the next topic to the last topic explained(not subtopic)
-        i=1
+        # Returns the next topic to the last topic explained(not subtopic)
+        i = 1
         while self._to_explain[-i] not in self._flow:
-            i+=1
+            i += 1
         return self._to_explain[-i]
-    
-    def jump_to_topic(self,topic:Topic):
-        #Jumps to the specified topic
+
+    def jump_to_topic(self, topic: Topic):
+        # Jumps to the specified topic
         if topic.get_id() in self._intents_to_topics:
-            while  len(self._to_explain)==0 or self._to_explain[-1] != topic:
-                if len(self._to_explain)>0:
+            while len(self._to_explain) == 0 or self._to_explain[-1] != topic:
+                if len(self._to_explain) > 0:
                     self._to_explain.pop()
                 else:
                     self.restart()
