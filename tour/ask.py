@@ -11,7 +11,7 @@ class Ask(Visitor):
     def __init__(self) -> None:
         super().__init__()
 
-    def visit_sequential(it : SequentialIterator) -> str:
+    def visit_sequential(self, it : SequentialIterator) -> str:
         respond = "utter_sin_question"
         while respond=="utter_sin_question":
             it.restart()
@@ -20,8 +20,8 @@ class Ask(Visitor):
             respond=it.get_to_explain()[-1].get_question()
         return respond
     
-    def visit_global(it : GlobalIterator) -> str:
+    def visit_global(self, it : GlobalIterator) -> str:
         raise NotImplementedError
     
-    def visit_neutral(it : NeutralIterator) -> str:
+    def visit_neutral(self, it : NeutralIterator) -> str:
         raise NotImplementedError

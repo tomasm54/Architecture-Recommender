@@ -20,17 +20,17 @@ class Node(metaclass=abc.ABCMeta):
     def next(self, it : iterator.Iterator, tracker : DialogueStateTracker) -> str:
         raise NotImplementedError
     
-#class NodeGet(Node):
-#    
-#    def __init__(self, node: Node, criterion: Criterion) -> None:
-#        self._node = node
-#        super().__init__(criterion)
+class NodeGet(Node):
     
-#    def next(self, it : iterator.Iterator, tracker : DialogueStateTracker) -> str:
-#        if self._criterion.check(tracker):
-#            return it.accept(get_topic.GetTopic(next(tracker.get_latest_entity_values("tema"), None)))
-#        else: 
-#            return self._node.next(it,tracker)
+    def __init__(self, node: Node, criterion: Criterion) -> None:
+        self._node = node
+        super().__init__(criterion)
+    
+    def next(self, it : iterator.Iterator, tracker : DialogueStateTracker) -> str:
+        if self._criterion.check(tracker):
+            return it.accept(get_topic.GetTopic(next(tracker.get_latest_entity_values("tema"), None)))
+        else: 
+            return self._node.next(it,tracker)
 
 class DefaultNode(Node):
 

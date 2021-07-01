@@ -1,5 +1,5 @@
 import abc
-#from tour import visitor
+from tour import visitor
 from typing import Dict, List
 
 from tour.topics import Topic
@@ -25,9 +25,9 @@ class Iterator(metaclass=abc.ABCMeta):
     def next(self) -> str:
         raise NotImplementedError
 
-#    @abc.abstractmethod
-#    def accept(self, visitor : visitor.Visitor) -> str:
-#        raise NotImplementedError
+    @abc.abstractmethod
+    def accept(self, visitor : visitor.Visitor) -> str:
+        raise NotImplementedError
 
     def get_current_topic(self)-> str:
         return self._current_topic
@@ -100,8 +100,8 @@ class SequentialIterator(Iterator):
 
         return self._to_explain[-1].get_explanation()
     
-#    def accept(self, visitor: visitor.Visitor) -> str:
-#        return visitor.visit_sequential(self)
+    def accept(self, visitor: visitor.Visitor) -> str:
+        return visitor.visit_sequential(self)
     
 
 class GlobalIterator(Iterator):
@@ -125,8 +125,8 @@ class GlobalIterator(Iterator):
 
         return self._to_explain[-1].get_explanation()
     
-#    def accept(self, visitor: visitor.Visitor) -> str:
-#        return visitor.visit_global(self)
+    def accept(self, visitor: visitor.Visitor) -> str:
+        return visitor.visit_global(self)
     
 
 class NeutralIterator(Iterator):
@@ -158,5 +158,5 @@ class NeutralIterator(Iterator):
 
         return self._to_explain[-1].get_explanation()
 
-#    def accept(self, visitor: visitor.Visitor) -> str:
-#        return visitor.visit_neutral(self)
+    def accept(self, visitor: visitor.Visitor) -> str:
+        return visitor.visit_neutral(self)

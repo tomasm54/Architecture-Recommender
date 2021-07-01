@@ -9,13 +9,13 @@ class Visitor(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def visit_sequential(it : iterator.SequentialIterator) -> str:
+    def visit_sequential(self,it : iterator.SequentialIterator) -> str:
         raise NotImplementedError
     
     @abc.abstractmethod
-    def visit_global(it : iterator.GlobalIterator) -> str:
+    def visit_global(self,it : iterator.GlobalIterator) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_neutral(it : iterator.NeutralIterator) -> str:
+    def visit_neutral(self,it : iterator.NeutralIterator) -> str:
         raise NotImplementedError
