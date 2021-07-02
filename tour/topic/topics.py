@@ -181,11 +181,3 @@ class Topic:
     def get_amount_subtopics(self) -> int:
         return self._current_sub_topic
 
-
-class Example(Topic):
-    @staticmethod
-    def from_dict(raw_topic: Dict[str, Any]) -> "Example":
-        return Example(raw_topic["topic_id"], raw_topic["example_text"])
-
-    def __init__(self, topic_id: str, example_text: str):
-        super().__init__(topic_id, [example_text])

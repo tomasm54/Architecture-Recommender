@@ -9,6 +9,7 @@ class Criterion(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
+
 class EqualIntent(Criterion):
 
     def __init__(self, compare: str) -> None:

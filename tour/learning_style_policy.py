@@ -1,7 +1,7 @@
 import json
 import logging
-from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeGet, NodeNext
-from tour.chain.criterion import AndCriterion, EqualAction, EqualIntent, EqualPenultimateIntent, NotCriterion
+from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeAsk, NodeExample, NodeGet, NodeNext, NodeRepeat, NodeReset, NodeResponse
+from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, NotCriterion, OrCriterion
 
 from typing import Iterator, Optional, Any, Dict, List, Text
 
@@ -82,7 +82,30 @@ def functions_builder() -> Node:
         EqualIntent("affirm")))
     node1 = NodeGet(node1, AndCriterion(
         AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
-        EqualIntent("explicame_tema")))
+        AndCriterion(EqualIntent("explicame_tema"),NotCriterion(EqualEntity(None)))))
+    node1 = NodeGet(node1, AndCriterion(
+        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
+        AndCriterion(EqualIntent("no_entiendo"),NotCriterion(EqualEntity(None)))))
+    node1 = NodeRepeat(node1, OrCriterion(EqualAction("utter_ask_bad"),AndCriterion(
+        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
+        OrCriterion(AndCriterion(EqualIntent("no_entiendo"),EqualEntity(None)),EqualIntent("deny")))))
+    node1 = NodeExample(node1, AndCriterion(
+        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
+        EqualIntent("dame_ejemplo")))
+    node1 = NodeGet(node1, AndCriterion(
+        AndCriterion(EqualPenultimateIntent("utter_cross_examine"), EqualPenultimateIntent("utter_cross_examine_example")),
+        EqualIntent("dame_ejemplo")),example=True)
+    node1 = NodeGet(node1, AndCriterion(
+        AndCriterion(EqualPenultimateIntent("utter_cross_examine"), EqualPenultimateIntent("utter_cross_examine_example")),
+        NotCriterion(EqualIntent("dame_ejemplo"))),example=False)
+    node1 = NodeGet(node1, AndCriterion(
+        AndCriterion(EqualPenultimateIntent("utter_cross_examine"), EqualPenultimateIntent("utter_cross_examine_jump")),
+        EqualIntent("change_current_flow")),jump=True)
+    node1 = NodeGet(node1, AndCriterion(
+        AndCriterion(EqualPenultimateIntent("utter_cross_examine"), EqualPenultimateIntent("utter_cross_examine_jump")),
+        NotCriterion(EqualIntent("change_current_flow"))),jump=False)
+    node1 = NodeAsk(node1, OrCriterion(EqualAction("utter_ask"),EqualAction("utter_ask_good")))
+    node1 = NodeResponse(node1 , EqualPenultimateIntent("utter_cross_examine_tema"))
     return node1
 
 
