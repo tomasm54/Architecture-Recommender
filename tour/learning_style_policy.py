@@ -112,7 +112,7 @@ def functions_builder() -> Node:
 class LearningStylePolicy(Policy):
     last_action_timestamp = 0
     answered = False
-    _it = Iterator
+    _it = ConversationFlow
     learning_style_iterators = {"sequential": ConversationFlow, "global": ConversationFlow}
 
     def __init__(
