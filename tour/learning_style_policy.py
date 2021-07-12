@@ -3,7 +3,7 @@ import logging
 from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeAsk, NodeExample, NodeGet, NodeNext, NodeRepeat, NodeReset, NodeResponse
 from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, NotCriterion, OrCriterion
 
-from typing import Iterator, Optional, Any, Dict, List, Text
+from typing import Optional, Any, Dict, List, Text
 
 from rasa.shared.core.domain import Domain
 from rasa.shared.core import events
@@ -60,7 +60,7 @@ def move_to_a_location(response):
 
 def create_iterator(
         path_flow: str, path_intents_to_topics: str, learning: str
-) -> Iterator:
+) -> ConversationFlow:
     with open(path_flow) as file:
         flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
     with open(path_intents_to_topics) as file:
