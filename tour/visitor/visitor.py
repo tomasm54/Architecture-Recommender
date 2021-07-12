@@ -1,17 +1,19 @@
 import abc
-from tour.iterator.iterator import Iterator
+from tour.iterator.conversation_flow import ConversationFlow
 
 
 class Visitor(metaclass=abc.ABCMeta):
-
+    """
+    Abstract implementation of Visitor design pattern.
+    """
     @abc.abstractmethod
-    def visit_sequential(self, it: Iterator) -> str:
+    def visit_sequential(self, it: ConversationFlow) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_global(self, it: Iterator) -> str:
+    def visit_global(self, it: ConversationFlow) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_neutral(self, it: Iterator) -> str:
+    def visit_neutral(self, it: ConversationFlow) -> str:
         raise NotImplementedError

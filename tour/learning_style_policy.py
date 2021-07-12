@@ -15,7 +15,7 @@ from rasa.core.policies.policy import Policy, PolicyPrediction, confidence_score
 from rasa.shared.core.trackers import DialogueStateTracker
 from rasa.shared.core.generator import TrackerWithCachedStates
 
-from tour.iterator.iterator import Iterator
+from tour.iterator.conversation_flow import Iterator
 from tour.topic.topics import parse_topic
 from tour.iterator.concrete_iterator import GlobalIterator, SequentialIterator, NeutralIterator
 

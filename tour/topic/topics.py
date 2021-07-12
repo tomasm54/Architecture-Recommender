@@ -5,8 +5,6 @@ def parse_topic(raw_topic: Dict[str, Any]) -> "Topic":
     topic_type = raw_topic["type"]
     if topic_type == "simple":
         return Topic.from_dict(raw_topic)
-    if topic_type == "example":
-        return Example.from_dict(raw_topic)
 
 
 class Topic:
@@ -47,7 +45,8 @@ class Topic:
             sub_topics: Optional[List["Topic"]] = None,
             questions: Optional[List[str]] = None
     ):
-        """Constructor.
+        """
+        Constructor.
 
         Author: Bruno.
 
@@ -61,6 +60,8 @@ class Topic:
             Examples to give for the topic.
         sub_topics
             Sub topics of the topic.
+        questions
+            Questions to make to the user.
         """
         self._id = topic_id
         self._utters_explanations = utters_explanations
@@ -78,15 +79,45 @@ class Topic:
         self._current_question = 0
 
     def get(self) -> Dict[str, "Topic"]:
+        """
+        Get the current topic.
+
+        Author: Tomas
+
+        Returns
+        -------
+        Dictionary with the current topic's information and
+        each subtopic within the main topic.
+        """
         topics = {self._id: self}
         for topic in self._sub_topics:
             topics.update(topic.get())
         return topics
 
     def set_current_example(self, example: int):
+        """
+        Set the current examples' index.
+
+        Author: Tomas
+
+        Parameters
+        ----------
+
+        example
+            new examples' index
+        """
         self._current_example = example
 
     def get_current_example(self) -> int:
+        """
+        Get the current examples' index.
+
+        Author: Tomas
+
+        Returns
+        -------
+        The index of the current example.
+        """
         return self._current_example
 
     def get_explanation(self, mark_as_explained: bool = True) -> str:
@@ -105,6 +136,16 @@ class Topic:
         return self._utters_explanations[self._detail_level]
 
     def get_example(self) -> str:
+        """
+        Get the utter associated to the next example to give.
+
+        Author: Tomas
+
+        Returns
+        -------
+        Utter associated to the next example if the topic has any example,
+        otherwise it returns a default utter.
+        """
         if self._current_example < len(self._examples):
             example = self._examples[self._current_example]
             self._current_example += 1
@@ -114,6 +155,16 @@ class Topic:
             return "utter_sin_ejemplos"
 
     def get_question(self) -> str:
+        """
+        Get the utter associated to the topic's next question.
+
+        Author: Adrian
+
+        Returns
+        -------
+        Utter associated to the next question if the topic has any,
+        otherwise it returns a default utter.
+        """
         if self._current_question < len(self._questions):
             question = self._questions[self._current_question]
             self._current_question += 1
@@ -153,9 +204,29 @@ class Topic:
             topic.restart()
 
     def get_id(self) -> str:
+        """
+        Get the current topic ID
+
+        Author: Adrian
+
+        Returns
+        -------
+        Topic's name.
+        """
         return self._id
 
     def set_explained(self, explained: bool):
+        """
+        Set the current topic as explained or not explained.
+
+        Author: Adrian
+
+        Parameters
+        ----------
+
+        explained
+            Boolean value to set if the current topic is explained or not.
+        """
         self.is_explained = explained
 
     @property
@@ -179,5 +250,13 @@ class Topic:
         return self._utters_explanations[self._detail_level]
 
     def get_amount_subtopics(self) -> int:
-        return self._current_sub_topic
+        """
+        Get the amount of subtopics of the current topic.
 
+        Author: Tomas
+
+        Returns
+        -------
+        Returns the amount of subtopics that the current topic has.
+        """
+        return self._current_sub_topic
