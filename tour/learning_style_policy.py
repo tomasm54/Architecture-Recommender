@@ -15,7 +15,7 @@ from rasa.core.policies.policy import Policy, PolicyPrediction, confidence_score
 from rasa.shared.core.trackers import DialogueStateTracker
 from rasa.shared.core.generator import TrackerWithCachedStates
 
-from tour.iterator.conversation_flow import Iterator
+from tour.iterator.conversation_flow import ConversationFlow
 from tour.topic.topics import parse_topic
 from tour.iterator.concrete_iterator import GlobalIterator, SequentialIterator, NeutralIterator
 
@@ -113,7 +113,7 @@ class LearningStylePolicy(Policy):
     last_action_timestamp = 0
     answered = False
     _it = Iterator
-    learning_style_iterators = {"sequential": Iterator, "global": Iterator}
+    learning_style_iterators = {"sequential": ConversationFlow, "global": ConversationFlow}
 
     def __init__(
             self,
