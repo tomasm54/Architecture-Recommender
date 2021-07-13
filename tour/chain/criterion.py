@@ -241,7 +241,7 @@ class NotCriterion(Criterion):
 
     def check(self, tracker: DialogueStateTracker) -> bool:
         """
-        Checks if the AND operation is true or false
+        Checks if the NOT operation is true or false
 
         Author: Adrian
 
@@ -284,7 +284,7 @@ class OrCriterion(Criterion):
 
     def check(self, tracker: DialogueStateTracker) -> bool:
         """
-        Checks if the AND operation is true or false
+        Checks if the OR operation is true or false
 
         Author: Tomas
 

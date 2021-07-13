@@ -69,7 +69,7 @@ responses:
     - text: "Sprint Backlok es Sprint backlog"
 
   utter_cross_examine_tema_disenio_backlog:
-    - text: "Diseño backlog es jugar al futbol"
+    - text: "Diseño backlog es Diseño backlog"
 
   utter_ask_good:
     - text: "Correcto ahi te va otra"

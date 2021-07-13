@@ -92,7 +92,7 @@
     ],
     "questions": [
       "utter_cross_examine_tema_disenio_backlog", 
-      "deny" 
+      "affirm" 
     ] 
   }
 ]

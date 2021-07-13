@@ -52,15 +52,7 @@ class Ask(Visitor):
 
         utter associated to a question from a random subtopic in conversation flow.
         """
-        respond = "utter_sin_question"
-        it.restart()
-        question = 0
-        keys = list(it.get_intents_to_topic().keys())
-        while respond == "utter_sin_question" and Topic(keys[question],[]) in it.get_to_explain():
-            question = randint(0, len(it.get_intents_to_topic()) - 1)
-            respond = it.get_intents_to_topic()[keys[question]].get_question()
-        it.jump_to_topic(Topic(keys[question],[]))
-        return respond
+        return self.search_question(it)
 
     def visit_neutral(self, it: ConversationFlow) -> str:
         """
@@ -100,8 +92,9 @@ class Ask(Visitor):
         """
         respond = "utter_sin_question"
         it.restart()
+        question : int
         keys = list(it.get_intents_to_topic().keys())
-        while respond == "utter_sin_question":
+        while respond.find("utter_cross_examine")==-1:
             question = randint(0, len(it.get_intents_to_topic()) - 1)
             respond = it.get_intents_to_topic()[keys[question]].get_question()
         it.jump_to_topic(Topic(keys[question],[]))

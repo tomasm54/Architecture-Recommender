@@ -49,7 +49,7 @@ class GetTopic(Visitor):
                 it.set_current_topic(self._topic)
                 return "utter_cross_examine_jump_sequential"
             else:
-                return self.get_topic(it)
+                return self.get_topic(it, it.get_jump())
         else:
             return self.get_topic(it)
 
