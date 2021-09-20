@@ -1,5 +1,6 @@
 import json
 import logging
+from tour.loading_script import create_iterator, functions_builder, load_learning_styles
 from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeAsk, NodeExample, NodeGet, NodeNext, NodeRepeat, NodeReset, NodeResponse
 from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, NotCriterion, OrCriterion
 
@@ -57,63 +58,11 @@ def move_to_a_location(response):
     #                       {"location": locations.get(response),
     #                        "to": "Cristina"})
 
-
-def create_iterator(
-        path_flow: str, path_intents_to_topics: str, learning: str
-) -> ConversationFlow:
-    with open(path_flow) as file:
-        flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
-    with open(path_intents_to_topics) as file:
-        intents_to_topics = json.load(file)
-    if learning == "global":
-        return GlobalIterator(intents_to_topics, flow)
-    if learning == "sequential":
-        return SequentialIterator(intents_to_topics, flow)
-    if learning == "neutral":
-        return NeutralIterator(intents_to_topics, flow)
-
-
-def functions_builder() -> Node:
-    node1 = DefaultNode(None)
-    node1 = NodeActionListen(node1, AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),
-                                                 NotCriterion(EqualAction("action_listen"))))
-    node1 = NodeNext(node1, AndCriterion(
-        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
-        EqualIntent("affirm")))
-    node1 = NodeGet(node1, AndCriterion(
-        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
-        AndCriterion(EqualIntent("explicame_tema"),NotCriterion(EqualEntity(None)))))
-    node1 = NodeGet(node1, AndCriterion(
-        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
-        AndCriterion(EqualIntent("no_entiendo"),NotCriterion(EqualEntity(None)))))
-    node1 = NodeRepeat(node1, OrCriterion(EqualAction("utter_ask_bad"),AndCriterion(
-        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
-        OrCriterion(AndCriterion(EqualIntent("no_entiendo"),EqualEntity(None)),EqualIntent("deny")))))
-    node1 = NodeExample(node1, AndCriterion(
-        AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")), EqualAction("action_listen")),
-        EqualIntent("dame_ejemplo")))
-    node1 = NodeGet(node1, AndCriterion(
-        AndCriterion(EqualPenultimateIntent("utter_cross_examine"), EqualPenultimateIntent("utter_cross_examine_example")),
-        EqualIntent("dame_ejemplo")),example=True)
-    node1 = NodeGet(node1, AndCriterion(
-        AndCriterion(EqualPenultimateIntent("utter_cross_examine"), EqualPenultimateIntent("utter_cross_examine_example")),
-        NotCriterion(EqualIntent("dame_ejemplo"))),example=False)
-    node1 = NodeGet(node1, AndCriterion(
-        AndCriterion(EqualPenultimateIntent("utter_cross_examine"), EqualPenultimateIntent("utter_cross_examine_jump")),
-        EqualIntent("change_current_flow")),jump=True)
-    node1 = NodeGet(node1, AndCriterion(
-        AndCriterion(EqualPenultimateIntent("utter_cross_examine"), EqualPenultimateIntent("utter_cross_examine_jump")),
-        NotCriterion(EqualIntent("change_current_flow"))),jump=False)
-    node1 = NodeAsk(node1, OrCriterion(EqualAction("utter_ask"),EqualAction("utter_ask_good")))
-    node1 = NodeResponse(node1 , EqualPenultimateIntent("utter_cross_examine_tema"))
-    return node1
-
-
 class LearningStylePolicy(Policy):
     last_action_timestamp = 0
     answered = False
     _it = ConversationFlow
-    learning_style_iterators = {"sequential": ConversationFlow, "global": ConversationFlow}
+    learning_style_iterators = load_learning_styles()
 
     def __init__(
             self,
@@ -128,11 +77,8 @@ class LearningStylePolicy(Policy):
         self.story_profiles = story_profiles if story_profiles is not None else {}
         self.usertype = usertype if usertype is not None else {}
         self.learning_style = learning_style if learning_style is not None else DEFAULT_LEARNING_STYLE
-        self.learning_style_iterators["sequential"] = create_iterator(r"info/flow.json", r"info/intents_to_topics.json",
-                                                                      "sequential")
-        self.learning_style_iterators["global"] = create_iterator(r"info/flow.json", r"info/intents_to_topics.json",
-                                                                  "global")
-        self._it = create_iterator(r"info/flow.json", r"info/intents_to_topics.json", "neutral")
+        create_iterator(self.learning_style_iterators)
+        self._it = self.learning_style_iterators["neutral"]
         self._criterion_learning = AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),
                                                 EqualAction("action_listen"))
         # to do script

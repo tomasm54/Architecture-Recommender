@@ -1,4 +1,5 @@
 import abc
+from tour.visitor.next_topic import NextTopic
 
 from rasa.shared.core.trackers import DialogueStateTracker
 
@@ -284,7 +285,7 @@ class NodeNext(Node):
         the criterion is checked as true, otherwise it checks the next node.
         """
         if self._criterion.check(tracker):
-            return it.next()
+            return it.accept(NextTopic())
         else:
             return self._node.next(it, tracker)
 
@@ -467,6 +468,6 @@ class NodeReset(Node):
         """
         if self._criterion.check(tracker):
             it.restart()
-            return it.next()
+            return it.accept(NextTopic())
         else:
             return self._node.next(it, tracker)

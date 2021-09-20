@@ -36,13 +36,7 @@ class ConversationFlow(metaclass=abc.ABCMeta):
     def in_tour(self, intent_name: str) -> bool:
         return intent_name in self._intents_to_topics
 
-    @abc.abstractmethod
-    def next(self) -> str:
-        """
-        Abstract method that gives the next topic in the conversation flow.
-        """
-        raise NotImplementedError
-
+    
     def get_current_topic(self) -> str:
         """
         Get the current topic's ID
@@ -202,3 +196,9 @@ class ConversationFlow(metaclass=abc.ABCMeta):
             while self._to_explain[-1] not in self._flow:
                 self._to_explain.pop()
             self._to_explain[-1].set_explained(True)
+
+    def pop_not_explained_topic(self):
+        self._to_explain.pop()
+
+    def append_topic_to_explain(self, topic : Topic):
+        self._to_explain.append(topic)

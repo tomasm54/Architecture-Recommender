@@ -1,4 +1,5 @@
-from tour.topic.topics import Topic
+import json
+from tour.topic.topics import Topic, parse_topic
 from typing import Dict, List
 from tour.iterator.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
@@ -14,30 +15,6 @@ class SequentialIterator(ConversationFlow):
         """
         super().__init__(intents_to_topics, flow)
 
-    def next(self) -> str:
-        """
-        Get the next utter with a conversation flow iteration that describes a sequential person.
-        It enters to the main topic and each one of the subtopics.
-
-        Author: Tomas
-
-        Returns
-        -------
-
-        Utter associated to the next explanation for a Sequential person.
-        """
-        while len(self._to_explain) > 0 and self._to_explain[-1].is_explained:
-            next_to_explain = self._to_explain[-1].next()
-            if next_to_explain is None:
-                self._to_explain.pop()
-            else:
-                self._to_explain.append(next_to_explain)
-
-        if len(self._to_explain) == 0:
-            return "utter_ask"
-
-        return self._to_explain[-1].get_explanation()
-
     def accept(self, visitor: Visitor) -> str:
         """
         Accepts the visitor
@@ -50,6 +27,10 @@ class SequentialIterator(ConversationFlow):
         Utter associated to the visitor functionality.
         """
         return visitor.visit_sequential(self)
+     
+    def load(intents_to_topics: Dict[str, str], flow: List[Topic])-> ConversationFlow:
+        return SequentialIterator(intents_to_topics, flow)
+
 
 
 class GlobalIterator(ConversationFlow):
@@ -61,23 +42,6 @@ class GlobalIterator(ConversationFlow):
         Author: Adrian
         """
         super().__init__(intents_to_topics, flow)
-
-    def next(self) -> str:
-        """
-        Iterates over the conversation flow not entering in the subtopics of the topic, describing a global person
-
-        Author: Adrian.
-
-        Returns
-        -------
-            Utter associated to the next topic.
-        """
-        if self._to_explain[-1].is_explained:
-            self._to_explain.pop()
-        if len(self._to_explain) == 0:
-            return "utter_ask"
-
-        return self._to_explain[-1].get_explanation()
 
     def accept(self, visitor: Visitor) -> str:
         """
@@ -91,6 +55,9 @@ class GlobalIterator(ConversationFlow):
         Utter associated to the visitor functionality.
         """
         return visitor.visit_global(self)
+        
+    def load(intents_to_topics: Dict[str, str], flow: List[Topic])-> ConversationFlow:
+        return GlobalIterator(intents_to_topics, flow)
 
 
 class NeutralIterator(ConversationFlow):
@@ -102,31 +69,6 @@ class NeutralIterator(ConversationFlow):
         Author: Tomas
         """
         super().__init__(intents_to_topics, flow)
-
-    def next(self) -> str:
-        """
-        Iterates over the conversation flow entering only in the first subtopic of the topic, describing a Neutral person
-
-        Author: Tomas.
-
-        Returns
-        -------
-            Utter associated to the next topic.
-        """
-        while len(self._to_explain) > 0 and self._to_explain[-1].is_explained:
-            if self._to_explain[-1].get_amount_subtopics() < 1:
-                next_to_explain = self._to_explain[-1].next()
-                if next_to_explain is None:
-                    self._to_explain.pop()
-                else:
-                    self._to_explain.append(next_to_explain)
-            else:
-                self._to_explain.pop()
-
-        if len(self._to_explain) == 0:
-            return "utter_ask"
-
-        return self._to_explain[-1].get_explanation()
 
     def accept(self, visitor: Visitor) -> str:
         """
@@ -140,3 +82,6 @@ class NeutralIterator(ConversationFlow):
         Utter associated to the visitor functionality.
         """
         return visitor.visit_neutral(self)
+    
+    def load(intents_to_topics: Dict[str, str], flow: List[Topic]) -> ConversationFlow:
+        return NeutralIterator(intents_to_topics, flow)
