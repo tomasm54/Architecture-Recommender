@@ -5,7 +5,7 @@ from rasa.shared.core.trackers import DialogueStateTracker
 
 from tour.chain.criterion import Criterion
 from tour.visitor.get_topic import GetTopic
-from tour.iterator.conversation_flow import ConversationFlow
+from tour.ConversationFlow.conversation_flow import ConversationFlow
 from tour.visitor.ask import Ask
 from tour.visitor.example import Example
 
@@ -41,7 +41,7 @@ class Node(metaclass=abc.ABCMeta):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
         """
@@ -87,7 +87,7 @@ class NodeGet(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
         """
@@ -133,7 +133,7 @@ class DefaultNode(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
 
@@ -177,7 +177,7 @@ class NodeActionListen(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
 
@@ -226,7 +226,7 @@ class NodeRepeat(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
 
@@ -274,14 +274,14 @@ class NodeNext(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
 
         Returns
         -------
 
-        Returns the next explanation from the conversation flow depending on the learning style from the iterator if
+        Returns the next explanation from the conversation flow depending on the learning style from the ConversationFlow if
         the criterion is checked as true, otherwise it checks the next node.
         """
         if self._criterion.check(tracker):
@@ -323,7 +323,7 @@ class NodeAsk(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
         """
@@ -366,7 +366,7 @@ class NodeExample(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
         """
@@ -410,7 +410,7 @@ class NodeResponse(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
 
@@ -462,7 +462,7 @@ class NodeReset(Node):
         ----------
 
         it
-            Current iterator to iterate over the conversation flow.
+            Current ConversationFlow to iterate over the conversation flow.
         tracker
             Rasa tracker.
         """

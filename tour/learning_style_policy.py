@@ -1,8 +1,10 @@
 import json
 import logging
-from tour.loading_script import create_iterator, functions_builder, load_learning_styles
-from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeAsk, NodeExample, NodeGet, NodeNext, NodeRepeat, NodeReset, NodeResponse
-from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, NotCriterion, OrCriterion
+from tour.loading_script import create_learning_style_flows, functions_builder, load_learning_styles
+from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeAsk, NodeExample, NodeGet, NodeNext, NodeRepeat, \
+    NodeReset, NodeResponse
+from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, \
+    NotCriterion, OrCriterion
 
 from typing import Optional, Any, Dict, List, Text
 
@@ -16,9 +18,9 @@ from rasa.core.policies.policy import Policy, PolicyPrediction, confidence_score
 from rasa.shared.core.trackers import DialogueStateTracker
 from rasa.shared.core.generator import TrackerWithCachedStates
 
-from tour.iterator.conversation_flow import ConversationFlow
+from tour.ConversationFlow.conversation_flow import ConversationFlow
 from tour.topic.topics import parse_topic
-from tour.iterator.concrete_iterator import GlobalIterator, SequentialIterator, NeutralIterator
+from tour.ConversationFlow.concrete_learning_styles_flows import Global, Sequential, Neutral
 
 logger = logging.getLogger(__name__)
 
@@ -58,11 +60,12 @@ def move_to_a_location(response):
     #                       {"location": locations.get(response),
     #                        "to": "Cristina"})
 
+
 class LearningStylePolicy(Policy):
     last_action_timestamp = 0
     answered = False
     _it = ConversationFlow
-    learning_style_iterators = load_learning_styles()
+    learning_style_flows = load_learning_styles()
 
     def __init__(
             self,
@@ -77,8 +80,8 @@ class LearningStylePolicy(Policy):
         self.story_profiles = story_profiles if story_profiles is not None else {}
         self.usertype = usertype if usertype is not None else {}
         self.learning_style = learning_style if learning_style is not None else DEFAULT_LEARNING_STYLE
-        create_iterator(self.learning_style_iterators)
-        self._it = self.learning_style_iterators["neutral"]
+        create_learning_style_flows(self.learning_style_flows)
+        self._it = self.learning_style_flows["neutral"]
         self._criterion_learning = AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),
                                                 EqualAction("action_listen"))
         # to do script
@@ -157,8 +160,8 @@ class LearningStylePolicy(Policy):
             print(self.usertype)
             if new_ls != self.learning_style and new_ls != '':
                 self.learning_style = new_ls
-                self.learning_style_iterators[new_ls].jump_to_topic(self._it.get_last_topic())
-                self._it = self.learning_style_iterators[new_ls]
+                self.learning_style_flows[new_ls].jump_to_topic(self._it.get_last_topic())
+                self._it = self.learning_style_flows[new_ls]
 
         return self._prediction(confidence_scores_for(self._functions.next(self._it, tracker), 1.0, domain))
 

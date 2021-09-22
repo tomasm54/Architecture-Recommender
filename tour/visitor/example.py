@@ -1,4 +1,4 @@
-from tour.iterator.conversation_flow import ConversationFlow
+from tour.ConversationFlow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
 
 AMT_EXAMPLE_NEUTRAL = 2
@@ -33,7 +33,7 @@ class Example(Visitor):
         ----------
 
         it
-            Sequential Iterator
+            Sequential
 
         Returns
         -------
@@ -56,7 +56,7 @@ class Example(Visitor):
         ----------
 
         it
-            Global Iterator
+            Global
 
         Returns
         -------
@@ -80,7 +80,7 @@ class Example(Visitor):
         ----------
 
         it
-            Neutral Iterator
+            Neutral
 
         Returns
         -------

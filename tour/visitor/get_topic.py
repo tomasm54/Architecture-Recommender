@@ -1,5 +1,5 @@
 from tour.topic.topics import Topic
-from tour.iterator.conversation_flow import ConversationFlow
+from tour.ConversationFlow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
 
 
@@ -37,7 +37,7 @@ class GetTopic(Visitor):
         ----------
 
         it
-            Sequential Iterator
+            Sequential
 
         Returns
         -------
@@ -66,7 +66,7 @@ class GetTopic(Visitor):
         ----------
 
         it
-            Global Iterator
+            Global
 
         Returns
         -------
@@ -93,7 +93,7 @@ class GetTopic(Visitor):
         ----------
 
         it
-            Neutral Iterator
+            Neutral
 
         Returns
         -------

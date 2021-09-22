@@ -1,5 +1,5 @@
 from tour.topic.topics import Topic
-from tour.iterator.conversation_flow import ConversationFlow
+from tour.ConversationFlow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
 from random import randint
 
@@ -26,7 +26,7 @@ class Ask(Visitor):
         ----------
 
         it
-            Sequential Iterator
+            Sequential
 
         Returns
         -------
@@ -45,7 +45,7 @@ class Ask(Visitor):
         ----------
 
         it
-            Global Iterator
+            Global
 
         Returns
         -------
@@ -64,7 +64,7 @@ class Ask(Visitor):
         ----------
 
         it
-            Neutral Iterator
+            Neutral
 
         Returns
         -------
