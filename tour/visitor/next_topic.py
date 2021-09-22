@@ -1,4 +1,4 @@
-from tour.ConversationFlow.conversation_flow import ConversationFlow
+from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
 
 class NextTopic(Visitor):

@@ -1,4 +1,4 @@
-from tour.ConversationFlow.conversation_flow import ConversationFlow
+from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
 
 AMT_EXAMPLE_NEUTRAL = 2
@@ -104,7 +104,7 @@ class Example(Visitor):
         ----------
 
         it
-            Concrete ConversationFlow
+            Concrete conversation_flow
 
         Returns
         -------

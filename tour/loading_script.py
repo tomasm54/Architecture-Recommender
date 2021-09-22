@@ -1,7 +1,7 @@
 import json
-from tour.ConversationFlow.concrete_learning_styles_flows import Global, Sequential, Neutral
+from tour.conversation_flow.concrete_learning_styles_flows import Global, Sequential, Neutral
 from tour.topic.topics import parse_topic
-from tour.ConversationFlow.conversation_flow import ConversationFlow
+from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeAsk, NodeExample, NodeGet, NodeNext, NodeRepeat, \
     NodeReset, NodeResponse
 from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, \

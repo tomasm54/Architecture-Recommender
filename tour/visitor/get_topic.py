@@ -1,5 +1,5 @@
 from tour.topic.topics import Topic
-from tour.ConversationFlow.conversation_flow import ConversationFlow
+from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
 
 
@@ -112,7 +112,7 @@ class GetTopic(Visitor):
         ----------
 
         it
-            concrete ConversationFlow
+            concrete conversation_flow
         jump
             Boolean value to check if the student wants to make the jump or not. Default value = None.
 

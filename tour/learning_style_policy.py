@@ -18,9 +18,9 @@ from rasa.core.policies.policy import Policy, PolicyPrediction, confidence_score
 from rasa.shared.core.trackers import DialogueStateTracker
 from rasa.shared.core.generator import TrackerWithCachedStates
 
-from tour.ConversationFlow.conversation_flow import ConversationFlow
+from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.topic.topics import parse_topic
-from tour.ConversationFlow.concrete_learning_styles_flows import Global, Sequential, Neutral
+from tour.conversation_flow.concrete_learning_styles_flows import Global, Sequential, Neutral
 
 logger = logging.getLogger(__name__)
 

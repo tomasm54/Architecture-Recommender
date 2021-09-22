@@ -1,5 +1,5 @@
 from tour.topic.topics import Topic
-from tour.ConversationFlow.conversation_flow import ConversationFlow
+from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
 from random import randint
 
@@ -83,7 +83,7 @@ class Ask(Visitor):
         ----------
 
         it
-            Concrete ConversationFlow
+            Concrete conversation_flow
 
         Returns
         -------

@@ -1,7 +1,7 @@
 import json
 from tour.topic.topics import Topic, parse_topic
 from typing import Dict, List
-from tour.ConversationFlow.conversation_flow import ConversationFlow
+from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
 
 
