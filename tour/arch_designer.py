@@ -67,8 +67,8 @@ def find_architecture(last_requirement: str) -> Optional[str]:
                 if compare_str_sintax(requirement, arch_req):
                     same_sintax_reqs += 1
         if same_sintax_reqs == len(arch_reqs) and (arch_id not in recognized_architectures):
-            print("arch:" + arch["architecture"]["type"])
             recognized_architectures.append(arch_id)
+            return arch["architecture"]["type"]
         same_sintax_reqs = 0
 
     return None

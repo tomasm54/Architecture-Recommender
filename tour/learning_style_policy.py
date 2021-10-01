@@ -1,8 +1,7 @@
 import json
 import logging
-from tour.loading_script import create_learning_style_flows, functions_builder, load_learning_styles
-from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeAsk, NodeExample, NodeGet, NodeNext, NodeRepeat, \
-    NodeReset, NodeResponse
+from tour.loading_script import functions_builder
+from tour.chain.node import Node, DefaultNode, NodeActionListen,  NodeExample,  NodeNext, NodeRepeat
 from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, \
     NotCriterion, OrCriterion
 
@@ -151,29 +150,14 @@ class LearningStylePolicy(Policy):
     ) -> PolicyPrediction:
         id = tracker.current_state()['sender_id']
         if id not in self._users:
-            var = tracker.current_state()["latest_message"]
-            metadata = var["metadata"]
-            personality = metadata["personality"]
-            if personality == "global":
-                self._users[id] = Global({},[])
-            else:
-                self._users[id] = Sequence({},[])    
-        """
-        if self._criterion_learning.check(tracker):
-            for s in self.usertype:
-                self.usertype.update({s: self.usertype.get(s) + self.story_profiles.get(s).get(intent["name"])})
-            aux_ls = 0.0
-            new_ls = ''
-            for s in self.usertype:
-                if aux_ls < self.usertype.get(s) and self.usertype.get(s) > LEARNING_STYLE_CONFIDENCE:
-                    aux_ls = self.usertype.get(s)
-                    new_ls = s
-            print(self.usertype)
-            if new_ls != self.learning_style and new_ls != '':
-                self.learning_style = new_ls
-                self.learning_style_flows[new_ls].jump_to_topic(self._it.get_last_topic())
-                self._it = self.learning_style_flows[new_ls]
-        """
+#            var = tracker.current_state()["latest_message"]
+#            metadata = var["metadata"]
+#            personality = metadata["personality"]
+#            if personality == "global":
+#            self._users[id] = Global({},[])
+#            else:
+            self._users[id] = Sequential({},[])    
+
         return self._prediction(confidence_scores_for(self._functions.next(self._users[id], tracker), 1.0, domain))
 
         # return self._prediction(confidence_scores_for("action_listen", 1.0, domain))
@@ -181,8 +165,8 @@ class LearningStylePolicy(Policy):
     def _metadata(self) -> Dict[Text, Any]:
         return {
             "priority": self.priority,
-            "story_profiles": self.story_profiles,
-            "usertype": self.usertype
+            #"story_profiles": self.story_profiles,
+            #"usertype": self.usertype
         }
 
     @classmethod

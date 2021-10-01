@@ -28,8 +28,6 @@ class Sequential(ConversationFlow):
         """
         return visitor.visit_sequential(self)
 
-    def load(intents_to_topics: Dict[str, str], flow: List[Topic]) -> ConversationFlow:
-        return Sequential(intents_to_topics, flow)
 
 
 class Global(ConversationFlow):
@@ -55,9 +53,6 @@ class Global(ConversationFlow):
         """
         return visitor.visit_global(self)
 
-    def load(intents_to_topics: Dict[str, str], flow: List[Topic]) -> ConversationFlow:
-        return Global(intents_to_topics, flow)
-
 
 class Neutral(ConversationFlow):
 
@@ -82,5 +77,3 @@ class Neutral(ConversationFlow):
         """
         return visitor.visit_neutral(self)
 
-    def load(intents_to_topics: Dict[str, str], flow: List[Topic]) -> ConversationFlow:
-        return Neutral(intents_to_topics, flow)

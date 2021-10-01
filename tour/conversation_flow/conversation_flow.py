@@ -25,7 +25,10 @@ class ConversationFlow(metaclass=abc.ABCMeta):
         all_topics = {}
         for topic in flow:
             all_topics.update(topic.get())
-        self._intents_to_topics = {intent: all_topics[topic] for
+        if len(intents_to_topics)==0:
+            self._intents_to_topics={}
+        else:
+            self._intents_to_topics = {intent: all_topics[topic] for
                                    intent, topic in intents_to_topics.items()}
 
         self._flow = flow
@@ -33,9 +36,15 @@ class ConversationFlow(metaclass=abc.ABCMeta):
         self._jump = None
         self._current_topic = None
 
+    def load(self, flow: List[Topic]):
+        self._flow = flow
+        self._to_explain = [topic for topic in reversed(flow)]
+
     def in_tour(self, intent_name: str) -> bool:
         return intent_name in self._intents_to_topics
 
+    def has_flow(self) -> bool:
+        return len(self._flow) > 0
     
     def get_current_topic(self) -> str:
         """
@@ -115,6 +124,10 @@ class ConversationFlow(metaclass=abc.ABCMeta):
         Copy of the List with the topics that has not been explained yet
         """
         return self._to_explain.copy()
+    
+    def topic_in_flow(self, topic : Topic) -> bool:
+
+        return topic in self._flow
 
     def get_intents_to_topic(self) -> Dict:
         """

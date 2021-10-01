@@ -1,12 +1,18 @@
 import abc
 from rasa.shared.core.trackers import DialogueStateTracker
+from tour.conversation_flow.conversation_flow import ConversationFlow
 
 
 class Criterion(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
-    def check(self, tracker: DialogueStateTracker) -> bool:
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         raise NotImplementedError
+
+class EmptyFlow(Criterion):
+
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
+        return not it.has_flow()
 
 
 class EqualIntent(Criterion):
@@ -29,7 +35,7 @@ class EqualIntent(Criterion):
         """
         self._compare = compare
 
-    def check(self, tracker: DialogueStateTracker) -> bool:
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         """
         Checks if the latest intent is equal to the string given in the constructor
 
@@ -69,7 +75,7 @@ class EqualAction(Criterion):
         """
         self._compare = compare
 
-    def check(self, tracker: DialogueStateTracker) -> bool:
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         """
         Checks if the latest action is equal to the string given in the constructor
 
@@ -109,7 +115,7 @@ class EqualEntity(Criterion):
         """
         self._compare = compare
 
-    def check(self, tracker: DialogueStateTracker) -> bool:
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         """
         Checks if the latest entity with "tema" as name is equal to the string given in the constructor
 
@@ -149,7 +155,7 @@ class EqualPenultimateIntent(Criterion):
         """
         self._compare = compare
 
-    def check(self, tracker: DialogueStateTracker) -> bool:
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         """
         Checks if the penultimate event in the tracker is equal to attribute compare set in constructor.
 
@@ -199,7 +205,7 @@ class AndCriterion(Criterion):
         self._criterion1 = criterion1
         self._criterion2 = criterion2
 
-    def check(self, tracker: DialogueStateTracker) -> bool:
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         """
         Checks if the AND operation is true or false
 
@@ -216,7 +222,7 @@ class AndCriterion(Criterion):
 
         Returns true if the AND operation is true, else is false.
         """
-        return self._criterion1.check(tracker) and self._criterion2.check(tracker)
+        return self._criterion1.check(it,tracker) and self._criterion2.check(it,tracker)
 
 
 class NotCriterion(Criterion):
@@ -239,7 +245,7 @@ class NotCriterion(Criterion):
         """
         self._criterion1 = criterion1
 
-    def check(self, tracker: DialogueStateTracker) -> bool:
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         """
         Checks if the NOT operation is true or false
 
@@ -256,7 +262,7 @@ class NotCriterion(Criterion):
 
         Returns true if the NOT operation is true, else is false.
         """
-        return not self._criterion1.check(tracker)
+        return not self._criterion1.check(it,tracker)
 
 
 class OrCriterion(Criterion):
@@ -282,7 +288,7 @@ class OrCriterion(Criterion):
         self._criterion1 = criterion1
         self._criterion2 = criterion2
 
-    def check(self, tracker: DialogueStateTracker) -> bool:
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         """
         Checks if the OR operation is true or false
 
@@ -299,4 +305,4 @@ class OrCriterion(Criterion):
 
         Returns true if the OR operation is true, else is false.
         """
-        return self._criterion1.check(tracker) or self._criterion2.check(tracker)
+        return self._criterion1.check(it,tracker) or self._criterion2.check(it,tracker)

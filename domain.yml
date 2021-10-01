@@ -47,35 +47,22 @@ responses:
   utter_cross_examine_example:
     - text: "Queres que te de un ejemplo de este tema o queres que te haga otra explicacion"
 
-  utter_ask:
-    - text: "Bueno ahora vamos con unas preguntas de estos temas para ver cuanto sabes"
+  utter_final:
+    - text: "termino la explicacion"
 
-  utter_cross_examine_tema_proceso_scrum:
-    - text: "Proceso Scrum es tomar Fernet"
-
-  utter_cross_examine_tema_product_backlog:
-    - text: "Product Backlog es un llavero con tu nombre"
-
-  utter_cross_examine_tema_product_owner:
-    - text: "Product owner es Product owner"
-
-  utter_cross_examine_tema_epic: 
-    - text: "Epica es Epica"
-
-  utter_cross_examine_tema_scrum_master: 
-    - text: "Scrum Master es Scrum Master"
+  utter_architecture:
+    - text: "A R Q U I T E C T U R A"
+  utter_no_architecture:
+    - text: "No hay arquitectura todavia"
   
-  utter_cross_examine_tema_sprint_backlog:
-    - text: "Sprint Backlok es Sprint backlog"
+  utter_requirement:
+    - text: "Dale mandale requerimientos"
 
-  utter_cross_examine_tema_disenio_backlog:
-    - text: "Diseño backlog es Diseño backlog"
+  utter_no_explain:
+    - text: "No hay explicacion"  
 
-  utter_ask_good:
-    - text: "Correcto ahi te va otra"
-
-  utter_ask_bad:
-    - text: "Nono le errraste, es esto en realidad es"
+  utter_no_tema:
+    - text: "No dijiste tema"
 
   utter_default:
     - text: "default"

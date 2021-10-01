@@ -134,6 +134,7 @@ class Topic:
         if self._detail_level >= len(self._utters_explanations):
             self._detail_level = 0
         return self._utters_explanations[self._detail_level]
+    
 
     def get_example(self) -> str:
         """

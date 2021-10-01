@@ -1,0 +1,29 @@
+[
+    {
+        "topic_id": "disenio_backlog",
+        "type": "simple",
+        "utters": [
+            "utter_disenio_backlog"
+        ],
+        "sub_topics": [
+            {
+            "topic_id": "user_story",
+            "type": "simple",
+            "utters": [
+                "utter_user_story"
+            ]
+            },
+            {
+            "topic_id": "tarea",
+            "type": "simple",
+            "utters": [
+                "utter_tarea"
+            ]
+            }
+        ],
+        "questions": [
+            "utter_cross_examine_tema_disenio_backlog", 
+            "affirm" 
+        ] 
+    }
+]

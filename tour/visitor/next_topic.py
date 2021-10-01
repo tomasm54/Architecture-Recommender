@@ -23,7 +23,8 @@ class NextTopic(Visitor):
 
         Utter associated to the next explanation for a Sequential person.
         """
-        while len(it.get_to_explain()) > 0 and it.get_to_explain()[-1].is_explained:
+        while len(it.get_to_explain()) > 0 and (it.get_to_explain()[-1].is_explained or it.topic_in_flow(it.get_to_explain()[-1])):
+            it.get_to_explain()[-1].get_explanation()
             next_to_explain = it.get_to_explain()[-1].next()
             if next_to_explain is None:
                 it.pop_not_explained_topic()
@@ -31,7 +32,7 @@ class NextTopic(Visitor):
                 it.append_topic_to_explain(next_to_explain)
 
         if len(it.get_to_explain()) == 0:
-            return "utter_ask"
+            return "utter_final"
 
         return it.get_to_explain()[-1].get_explanation()
 
@@ -48,32 +49,5 @@ class NextTopic(Visitor):
         if it.get_to_explain()[-1].is_explained:
             it.pop_not_explained_topic()
         if len(it.get_to_explain()) == 0:
-            return "utter_ask"
-
+            return "utter_final"
         return it.get_to_explain()[-1].get_explanation()
-
-    def visit_neutral(self, it: ConversationFlow) -> str:
-        """
-        Iterates over the conversation flow entering only in the first subtopic of the topic, describing a Neutral person
-
-        Author: Tomas.
-
-        Returns
-        -------
-            Utter associated to the next topic.
-        """
-        while len(it.get_to_explain()) > 0 and it.get_to_explain()[-1].is_explained:
-            if it.get_to_explain()[-1].get_amount_subtopics() < 1:
-                next_to_explain = it.get_to_explain()[-1].next()
-                if next_to_explain is None:
-                    it.pop_not_explained_topic()
-                else:
-                    it.append_topic_to_explain(next_to_explain)
-            else:
-                it.pop_not_explained_topic()
-
-        if len(it.get_to_explain()) == 0:
-            return "utter_ask"
-
-        return it.get_to_explain()[-1].get_explanation()
-    

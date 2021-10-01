@@ -1,0 +1,22 @@
+[
+  {
+    "topic_id": "proceso_scrum",
+    "type": "simple",
+    "utters": [
+      "utter_proceso_scrum"
+    ],
+    "sub_topics": [
+      {
+      "topic_id": "product_backlog",
+      "type": "simple",
+      "utters": [
+          "utter_product_backlog"
+      ]
+      }
+    ],
+    "questions": [
+      "utter_cross_examine_tema_proceso_scrum", 
+      "deny" 
+    ] 
+  }
+]
