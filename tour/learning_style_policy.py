@@ -6,7 +6,7 @@ from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeAsk, NodeEx
 from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, \
     NotCriterion, OrCriterion
 
-from typing import Optional, Any, Dict, List, Text
+from typing import Optional, Any, Dict, List, Sequence, Text
 
 from rasa.shared.core.domain import Domain
 from rasa.shared.core import events
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 MAX_HISTORY_NOT_SET = -1
 OLD_DEFAULT_MAX_HISTORY = 5
 BESTY_POLICY_PRIORITY = 10
-DEFAULT_LEARNING_STYLE = 'neutral'
+#DEFAULT_LEARNING_STYLE = 'neutral'
 LEARNING_STYLE_CONFIDENCE = 3
 
 
@@ -64,28 +64,29 @@ def move_to_a_location(response):
 class LearningStylePolicy(Policy):
     last_action_timestamp = 0
     answered = False
-    _it = ConversationFlow
-    learning_style_flows = load_learning_styles()
+    #_it = ConversationFlow
+    #learning_style_flows = load_learning_styles()
 
     def __init__(
             self,
             featurizer: Optional[TrackerFeaturizer] = None,
             priority: int = BESTY_POLICY_PRIORITY,
-            usertype: Optional[dict] = None,
-            story_profiles: Optional[dict] = None,
-            learning_style: Optional[str] = None,
+            #usertype: Optional[dict] = None,
+            #story_profiles: Optional[dict] = None,
+            #learning_style: Optional[str] = None,
             **kwargs: Any,
     ) -> None:
         super().__init__(featurizer, priority, **kwargs)
-        self.story_profiles = story_profiles if story_profiles is not None else {}
-        self.usertype = usertype if usertype is not None else {}
-        self.learning_style = learning_style if learning_style is not None else DEFAULT_LEARNING_STYLE
-        create_learning_style_flows(self.learning_style_flows)
-        self._it = self.learning_style_flows["neutral"]
+        #self.story_profiles = story_profiles if story_profiles is not None else {}
+        #self.usertype = usertype if usertype is not None else {}
+        #self.learning_style = learning_style if learning_style is not None else DEFAULT_LEARNING_STYLE
+        #create_learning_style_flows(self.learning_style_flows)
+        #self._it = self.learning_style_flows["neutral"]
         self._criterion_learning = AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),
                                                 EqualAction("action_listen"))
         # to do script
         self._functions = functions_builder()
+        self._users  = {}
 
     def train(
             self,
@@ -100,6 +101,7 @@ class LearningStylePolicy(Policy):
             for t in training_trackers
             if not hasattr(t, "is_augmented") or not t.is_augmented
         ]
+        """
         stories = {}
         amount_intents = {}
         for s in training_trackers:
@@ -130,7 +132,7 @@ class LearningStylePolicy(Policy):
         print(amount_intents)
         self.story_profiles.update(stories)
         print(self.story_profiles)
-        """Trains the policy on given training trackers.
+        Trains the policy on given training trackers.
 
         Args:
             training_trackers:
@@ -147,7 +149,16 @@ class LearningStylePolicy(Policy):
             interpreter: NaturalLanguageInterpreter,
             **kwargs: Any,
     ) -> PolicyPrediction:
-        intent = tracker.latest_message.intent
+        id = tracker.current_state()['sender_id']
+        if id not in self._users:
+            var = tracker.current_state()["latest_message"]
+            metadata = var["metadata"]
+            personality = metadata["personality"]
+            if personality == "global":
+                self._users[id] = Global({},[])
+            else:
+                self._users[id] = Sequence({},[])    
+        """
         if self._criterion_learning.check(tracker):
             for s in self.usertype:
                 self.usertype.update({s: self.usertype.get(s) + self.story_profiles.get(s).get(intent["name"])})
@@ -162,8 +173,8 @@ class LearningStylePolicy(Policy):
                 self.learning_style = new_ls
                 self.learning_style_flows[new_ls].jump_to_topic(self._it.get_last_topic())
                 self._it = self.learning_style_flows[new_ls]
-
-        return self._prediction(confidence_scores_for(self._functions.next(self._it, tracker), 1.0, domain))
+        """
+        return self._prediction(confidence_scores_for(self._functions.next(self._users[id], tracker), 1.0, domain))
 
         # return self._prediction(confidence_scores_for("action_listen", 1.0, domain))
 

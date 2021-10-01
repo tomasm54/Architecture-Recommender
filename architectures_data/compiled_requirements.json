@@ -1,0 +1,7 @@
+{
+  "Los datos del cerebro son procesados por la unidad de procesamiento de senales": "DETdetNOUNnsubjADPcaseNOUNnmodAUXauxVERBROOTADPcaseDETdetNOUNobjADPcaseNOUNnmodADPcaseNOUNnmod",
+  "Los datos procesados se envian a action management para determinar que accion ejecutar en el habitante": "DETdetNOUNnsubjADJamodPRONobjVERBROOTADPcasePROPNobjPROPNamodADPmarkVERBadvclSCONJmarkVERBccompVERBxcompADPcaseDETdetNOUNobl",
+  "La informacion es convertida a senales electricas y enviadas al cerebro": "DETdetNOUNnsubjAUXauxVERBROOTADPcaseNOUNobjADJamodCCONJccADJconjADPcaseNOUNobj",
+  "Cuando la matrix notifica habilidades al habitante, la informacion es enviada al action management": "SCONJmarkDETdetPROPNnsubjVERBadvclNOUNobjADPcaseNOUNobjPUNCTpunctDETdetNOUNnsubjAUXauxVERBROOTADPcaseNOUNobjNOUNcompound",
+  "La matrix se encarga de controlar el escenario": "DETdetPROPNnsubjPRONiobjVERBROOTADPmarkVERBxcompDETdetNOUNobj"
+}
