@@ -11,6 +11,7 @@ from tour.visitor.get_topic import GetTopic
 from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.visitor.ask import Ask
 from tour.visitor.example import Example
+from tour import arch_designer
 
 
 class Node(metaclass=abc.ABCMeta):
@@ -58,8 +59,8 @@ class NodeExplainArchitecture(Node):
         self._flows = flows
     
     def next(self, it: ConversationFlow, tracker: DialogueStateTracker) -> str:
-        if self._criterion.check(it,tracker):
-            arch = "layers"
+        if self._criterion.check(it, tracker):
+            arch = arch_designer.get_last_detected_arch()
             with open(self._flows[arch]) as file:
                 flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
             it.load(flow)

@@ -7,6 +7,7 @@ doclg = es_core_news_lg.load()
 
 requirements_path = r"architectures_data/compiled_requirements.json"
 architectures_path = r"architectures_data/requirements_architectures.json"
+last_arch_path = r"architectures_data/last_arch.json"
 
 with open(architectures_path) as architectures_file:
     architectures_data = json.load(architectures_file)
@@ -68,8 +69,14 @@ def find_architecture(last_requirement: str) -> Optional[str]:
                     same_sintax_reqs += 1
         if same_sintax_reqs == len(arch_reqs) and (arch_id not in recognized_architectures):
             recognized_architectures.append(arch_id)
+            with open(last_arch_path, 'w') as outfile:
+                json.dump({"name": arch["architecture"]["type"]}, outfile)
             return arch["architecture"]["type"]
         same_sintax_reqs = 0
 
     return None
 
+
+def get_last_detected_arch():
+    with open(last_arch_path) as last_file:
+        return json.load(last_file)["name"]

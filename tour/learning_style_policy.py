@@ -118,7 +118,7 @@ class LearningStylePolicy(Policy):
             if personality == "global":
                 self._users[id] = Global({},[])
             else:
-                self._users[id] = Sequential({},[]) 
+                self._users[id] = Sequential({},[])
 
         return self._prediction(confidence_scores_for(self._functions.next(self._users[id], tracker), 1.0, domain))
 
