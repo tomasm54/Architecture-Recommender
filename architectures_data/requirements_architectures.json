@@ -2,47 +2,49 @@
   "1": {
     "requirements": {
       "own": [
-        "Los datos del cerebro son procesados por la unidad de procesamiento de senales",
-        "Los datos procesados se envian a action management para determinar que accion ejecutar en el habitante",
-        "La informacion es convertida a senales electricas y enviadas al cerebro"
+        "Los {datos}(1) del [cerebro](1) son procesados por la [unidad de procesamiento de senales](2)",
+        "Los {datos procesados}(2) se envian a [action management](3) para determinar que {accion ejecutar}(3) en el [habitante](4)",
+        "La {respuesta}(4) es convertida a [senales electricas](5) y enviadas al cerebro"
       ]
     },
     "architecture": {
-      "units": [
-        [
-          "3",
-          "8-12"
-        ],
-        [
-          "6-7",
-          "15"
-        ],
-        [
-          "5-6"
-        ]
-      ],
       "messages": [
-        "[0,0]-[0,1]-tagarco-uni-",
-        "[0,1]-[1,0]--uni-",
-        "[1,0]-[1,1]--bi-",
-        "[1,0]-[2,0]--uni-",
-        "[2,0]-[0,0]--uni-"
+        "1|2|1|uni",
+        "2|3|2|uni",
+        "3|4|3|bi",
+        "3|5|4|uni",
+        "5|1||uni"
       ],
-      "type": "layers"
+      "type": "layers",
+      "units": {
+        "data management":"1|2|3|4|5"
+      }
     }
   },
   "2": {
     "requirements": {
+      "own": [
+        "El [habitante](1) {envia las acciones}(1) que ejecuto a la [simulacion](2)",
+        "La simulacion se encarga de {notificar}(2) a los habitantes afectados",
+        "La simulacion se encarga de {controlar}(3) el [escenario](3)"
+      ],
       "others": [
         "1"
       ],
-      "own": [
-        "Cuando la matrix notifica habilidades al habitante, la informacion es enviada al action management",
-        "La matrix se encarga de controlar el escenario"
+      "connectors": [
       ]
     },
     "architecture": {
-      "type": "tiers"
+      "messages": [
+        "1|2|1|uni",
+        "2|1|2|uni",
+        "2|3|3|uni"
+      ],
+      "type": "tiers",
+      "units": {
+        "simulation tier":"2|3",
+        "user tier": "[1]|1"
+      }
     }
   }
 }

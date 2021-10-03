@@ -1,5 +1,5 @@
 import json
-from typing import Optional
+from typing import Optional, List, Tuple
 
 import es_core_news_lg
 
@@ -72,3 +72,32 @@ def find_architecture(last_requirement: str) -> Optional[str]:
         same_sintax_reqs = 0
 
     return None
+
+
+class architecture_finder:
+
+    def __init__(self, initial_requirements: Optional[List]):
+        self.user_requirements = initial_requirements if initial_requirements else []
+        self.architectures = []
+        self.simple_architectures = [x for x in architectures_data.values() if
+                                     (not x["architecture"]["others"] or len(x["architecture"]["others"]) == 0)]
+
+    def add_requirement(self, requirement: str):
+        self.user_requirements.append(requirement)
+
+    def find_architecture(self) -> Tuple[str, str]:
+        found_architectures = self.find_simple_architectures()
+
+    def find_simple_architectures(self):
+        same_sintax_reqs = 0
+        for simple_arch in self.simple_architectures:
+            simple_arch_reqs = simple_arch["requirements"]["own"]  # load string requirements
+            for user_requirement in self.user_requirements:  # for each user requirement
+                for arch_req in simple_arch_reqs:  # for each requirement of the architecture
+                    # check if user requirement match with any arch requirement
+                    if compare_str_sintax(user_requirement, arch_req):
+                        same_sintax_reqs += 1
+            if same_sintax_reqs == len(arch_reqs) and (arch_id not in recognized_architectures):
+                recognized_architectures.append(arch_id)
+                return arch["architecture"]["type"]
+            same_sintax_reqs = 0
