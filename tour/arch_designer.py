@@ -14,23 +14,35 @@ with open(architectures_path) as architectures_file:
 with open(requirements_path) as requirements_file:
     requirements_data = json.load(requirements_file)
 
-user_requirements = []
-recognized_architectures = []
+ENTITY_START = "["
+ENTITY_END = "]"
+MESSAGE_START = "{"
+MESSAGE_END = "}"
+NUMERATOR_START = "("
+NUMERATOR_END = ")"
 
-
-def compare_str_sintax(str1: str, str2: str) -> bool:
+def compare_req_sintax(arch_req: str, user_req: str) -> bool:
     """
     Compare if two strings are equals sintactically
 
     FIRST VERSION: two strings are considered equal if they have same:
     - word qty and order and each has same "es_core_news_lg" spacy model pos_ and dep_
 
-    :param str1: string 1 to compare
-    :param str2: string 2 to compare
+    :param arch_req: structure
+    :param user_req: string 2 to compare
     :return: True if they are equals, False otherwise
     """
-    tag1 = doclg(str1)
-    tag2 = doclg(str2)
+    user_req_tagged = doclg(user_req)
+    arch_req_tagged = doclg(arch_req)
+    generic_arch_req = []
+    appendable = True
+    for token in arch_req_tagged:
+        if token.text in [ENTITY_START, MESSAGE_START]:
+
+
+
+
+
     tag1_sintax = []
     tag2_sintax = []
     for token in tag1:
@@ -101,3 +113,7 @@ class architecture_finder:
                 recognized_architectures.append(arch_id)
                 return arch["architecture"]["type"]
             same_sintax_reqs = 0
+
+    def parse_requirement(self, requirement: str) -> dict:
+
+
