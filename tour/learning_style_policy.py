@@ -100,45 +100,7 @@ class LearningStylePolicy(Policy):
             for t in training_trackers
             if not hasattr(t, "is_augmented") or not t.is_augmented
         ]
-        """
-        stories = {}
-        amount_intents = {}
-        for s in training_trackers:
-            story_name = s.as_dialogue().as_dict().get('name')
-            # initialize dict with intents as keys and 0 counts in each history
-            if story_name not in stories.keys():
-                # if the story does not exist, is added to the dictionary and the ocurrences of intents are updated
-                story_intents = dict.fromkeys(domain.intents, 0)
-                count_intents = count_intents_from_stories(s, story_intents)
-                stories.update({story_name: story_intents})
-                amount_intents.update({story_name: count_intents})
-                self.usertype.update({story_name: 0.0})
-            else:
-                # if the story already exists, is updated in the dictionary and the ocurrences of intents are added
-                aux_intents = stories.get(story_name)
-                count_intents = amount_intents.get(story_name) + count_intents_from_stories(s, aux_intents)
-                amount_intents.update({story_name: count_intents})
-                stories.update({story_name: aux_intents})
 
-        # here the training calculates the probability of ocurrence of each intent for each learning style
-        for story_name in stories:
-            for intent in stories.get(story_name):
-                stories.get(story_name).update({
-                    intent: stories.get(story_name).get(intent) / amount_intents.get(story_name)
-                })
-        print(self.usertype)
-        print(stories)
-        print(amount_intents)
-        self.story_profiles.update(stories)
-        print(self.story_profiles)
-        Trains the policy on given training trackers.
-
-        Args:
-            training_trackers:
-                the list of the :class:`rasa.core.trackers.DialogueStateTracker`
-            domain: the :class:`rasa.shared.core.domain.Domain`
-            interpreter: Interpreter which can be used by the polices for featurization.
-        """
         pass
 
     def predict_action_probabilities(
@@ -149,7 +111,6 @@ class LearningStylePolicy(Policy):
             **kwargs: Any,
     ) -> PolicyPrediction:
         id = tracker.current_state()['sender_id']
-        print("--------------------------------------------" + str(tracker.current_state()["latest_message"]))
         if id not in self._users:
             var = tracker.current_state()["latest_message"]
             metadata = var["metadata"]

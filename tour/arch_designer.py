@@ -72,3 +72,4 @@ def find_architecture(last_requirement: str) -> Optional[str]:
         same_sintax_reqs = 0
 
     return None
+

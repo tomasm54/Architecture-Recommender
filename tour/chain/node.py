@@ -50,6 +50,23 @@ class Node(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+class NodeExplainArchitecture(Node):
+    
+    def __init__(self, node: Node, criterion: Criterion, flows: dict) -> None:
+        super().__init__(criterion)
+        self._node = node
+        self._flows = flows
+    
+    def next(self, it: ConversationFlow, tracker: DialogueStateTracker) -> str:
+        if self._criterion.check(it,tracker):
+            arch = "layers"
+            with open(self._flows[arch]) as file:
+                flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
+            it.load(flow)
+            return it.accept(NextTopic())
+        else:
+            return self._node.next(it, tracker)
+        
 class NodeRequirement(Node):
 
     def __init__(self, node: Node, criterion: Criterion, flows: dict) -> None:
@@ -64,9 +81,6 @@ class NodeRequirement(Node):
                 return "utter_no_architecture"
             else:
                 if arch in self._flows:
-                    with open(self._flows[arch]) as file:
-                        flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
-                    it.load(flow)
                     return "utter_architecture"
                 else:
                     return "utter_no_explain"               
