@@ -79,7 +79,7 @@ nlu:
       - explicame eso devuelta
       - me podes explicar eso devuelta
       - me volves a explicar?
-      - me podes volver a explicar que es [product backlog]{"entity":"tema","value":"product_backlog"}
+      - me podes volver a explicar que es [scrum]{"entity":"tema","value":"scrum"}
       - no entendi ese tema
       - no entiendo lo que acabas de explicar
       - necesito que me vuelvas a explicar eso
@@ -87,26 +87,26 @@ nlu:
       - no entiendo que hace el equipo de desarrollo
       - no entiendo que hay en el tablero
       - quiero saber mas
-      - me podrias dar mas información sobre el [scrum master]{"entity":"tema","value":"scrum_master"}?
+      - me podrias dar mas información sobre el [scrum]{"entity":"tema","value":"scrum"}?
 
   - intent: explicame_tema
     examples: |
-      - como funciona el [proceso]{"entity":"tema","value":"proceso_scrum"}?
+      - como funciona el [scrum]{"entity":"tema","value":"scrum"}?
       - como es el proceso scrum?
       - que se hace en el proceso scrum?
       - como aplico [scrum]{"entity":"tema","value":"scrum"}?
       - como aplicar el proceso scrum?
-      - como funciona [product backlog]{"entity":"tema","value":"product_backlog"}?
+      - como funciona [scrum]{"entity":"tema","value":"scrum"}?
       - como es el proceso?
       - como es el flujo de trabajo?
       - me podes explicar el flujo de trabajo?
       - como seria el flujo del proceso?
       - como es el flujo de scrum?
-      - que hace el [product owner]{"entity":"tema","value":"product_owner"}?
-      - que son las [epicas]{"entity":"tema","value":"epica"}?
-      - cual es la utilidad del [sprint backlog]{"entity":"tema","value":"sprint_backlog"}?
-      - como se [diseña un backlog]{"entity":"tema","value":"disenio_backlog"}?
-      - que hace el [programador]{"entity":"tema","value":"development_team"}?
+      - que hace el [scrum]{"entity":"tema","value":"scrum"}?
+      - que son las [scrum]{"entity":"tema","value":"scrum"}?
+      - cual es la utilidad del [scrum]{"entity":"tema","value":"scrum"}?
+      - como se [scrum]{"entity":"tema","value":"scrum"}?
+      - que hace el [scrum]{"entity":"tema","value":"scrum"}?
   
   - intent: dame_ejemplo
     examples: |

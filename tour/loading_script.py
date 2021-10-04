@@ -1,7 +1,6 @@
 
-from tour.conversation_flow.concrete_learning_styles_flows import Global, Sequential, Neutral
 from tour.conversation_flow.conversation_flow import ConversationFlow
-from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeExample, NodeExplain, NodeExplainArchitecture, NodeGivesRequirement, NodeNext, NodeRepeat, NodeRequirement
+from tour.chain.node import Node, DefaultNode, NodeActionListen, NodeExplain, NodeExplainArchitecture, NodeGivesRequirement, NodeNext, NodeRepeat, NodeRequirement, NodeUtter
 from tour.chain.criterion import AndCriterion, EmptyFlow, EqualAction, EqualEntity, EqualIntent, EqualMessage, EqualPenultimateIntent, \
     NotCriterion, OrCriterion
 
@@ -26,6 +25,7 @@ def functions_builder() -> Node:
     node1 = NodeRepeat(node1, AndCriterion(NotCriterion(EmptyFlow()),AndCriterion(EqualAction("action_listen"),
         OrCriterion(AndCriterion(EqualIntent("no_entiendo"), EqualEntity(None)), EqualIntent("deny")))))
     node1 = NodeExplainArchitecture(node1, AndCriterion(EqualMessage("A R Q U I T E C T U R A"),EqualAction("action_listen")), FLOWS_PATHS)
+    node1 = NodeUtter(node1,EqualIntent("greet"),"utter_greet")
     return node1
 
 

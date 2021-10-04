@@ -1,29 +1,25 @@
 [
     {
-        "topic_id": "disenio_backlog",
+        "topic_id": "layers_abstract",
         "type": "simple",
         "utters": [
-            "utter_disenio_backlog"
+            "utter_layers_abstract"
         ],
         "sub_topics": [
             {
-            "topic_id": "user_story",
+            "topic_id": "layers_concrete_1",
             "type": "simple",
             "utters": [
-                "utter_user_story"
+                "utter_layers_concrete_1"
             ]
             },
             {
-            "topic_id": "tarea",
+            "topic_id": "layers_concrete_2",
             "type": "simple",
             "utters": [
-                "utter_tarea"
+                "utter_layers_concrete_2"
             ]
             }
-        ],
-        "questions": [
-            "utter_cross_examine_tema_disenio_backlog", 
-            "affirm" 
-        ] 
+        ]
     }
 ]
