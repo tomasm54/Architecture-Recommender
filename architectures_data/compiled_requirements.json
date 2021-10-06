@@ -1,7 +1,72 @@
 {
-  "Los datos del cerebro son procesados por la unidad de procesamiento de senales": "DETdetNOUNnsubjADPcaseNOUNnmodAUXauxVERBROOTADPcaseDETdetNOUNobjADPcaseNOUNnmodADPcaseNOUNnmod",
-  "Los datos procesados se envian a action management para determinar que accion ejecutar en el habitante": "DETdetNOUNnsubjADJamodPRONobjVERBROOTADPcasePROPNobjPROPNamodADPmarkVERBadvclSCONJmarkVERBccompVERBxcompADPcaseDETdetNOUNobl",
-  "La informacion es convertida a senales electricas y enviadas al cerebro": "DETdetNOUNnsubjAUXauxVERBROOTADPcaseNOUNobjADJamodCCONJccADJconjADPcaseNOUNobj",
-  "Cuando la matrix notifica habilidades al habitante, la informacion es enviada al action management": "SCONJmarkDETdetPROPNnsubjVERBadvclNOUNobjADPcaseNOUNobjPUNCTpunctDETdetNOUNnsubjAUXauxVERBROOTADPcaseNOUNobjNOUNcompound",
-  "La matrix se encarga de controlar el escenario": "DETdetPROPNnsubjPRONiobjVERBROOTADPmarkVERBxcompDETdetNOUNobj"
+  "1": {
+    "requirements": {
+      "own": [
+        "DETdet{1}ADPcase[1]AUXauxVERBROOTADPcaseDETdet[2]",
+        "DETdet{2}PRONobjVERBROOTADPcase[3]ADPmarkVERBadvclSCONJmark{3}ADPcaseDETdet[4]",
+        "DETdet{4}AUXauxVERBROOTADPcase[5]CCONJccADJconjADPcaseNOUNobj"
+      ],
+      "tagged_entity": {
+        "1": 1,
+        "2": 2,
+        "3": 2,
+        "4": 1
+      },
+      "tagged_message": {
+        "1": 1,
+        "2": 5,
+        "3": 2,
+        "4": 1,
+        "5": 2
+      }
+    },
+    "architecture": {
+      "messages": [
+        "1|2|1|uni",
+        "2|3|2|uni",
+        "3|4|3|bi",
+        "3|5|4|uni",
+        "5|1||uni"
+      ],
+      "type": "layers",
+      "units": {
+        "data management": "1|2|3|4|5"
+      }
+    }
+  },
+  "2": {
+    "requirements": {
+      "own": [
+        "DETdet[1]{1}PRONnsubjVERBaclADPcaseDETdet[2]",
+        "DETdet[2]PRONobjVERBROOTADPcase{2}ADPcaseDETdetNOUNobjADJamod",
+        "DETdet[2]PRONobjVERBROOTADPcase{3}DETdet[3]"
+      ],
+      "others": [
+        "1"
+      ],
+      "connectors": [],
+      "tagged_entity": {
+        "1": 3,
+        "2": 1,
+        "3": 1
+      },
+      "tagged_message": {
+        "1": 1,
+        "2": 1,
+        "3": 1
+      }
+    },
+    "architecture": {
+      "messages": [
+        "1|2|1|uni",
+        "2|1|2|uni",
+        "2|3|3|uni"
+      ],
+      "type": "tiers",
+      "units": {
+        "simulation tier": "2|3",
+        "user tier": "[1]|1"
+      }
+    }
+  }
 }

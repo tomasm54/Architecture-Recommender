@@ -2,9 +2,9 @@
   "1": {
     "requirements": {
       "own": [
-        "Los {datos}(1) del [cerebro](1) son procesados por la [unidad de procesamiento de senales](2)",
-        "Los {datos procesados}(2) se envian a [action management](3) para determinar que {accion ejecutar}(3) en el [habitante](4)",
-        "La {respuesta}(4) es convertida a [senales electricas](5) y enviadas al cerebro"
+        "Los {datos}1 del [cerebro]1 son procesados por la [unidad de procesamiento de senales]2",
+        "Los {datos procesados}2 se envian a [action management]3 para determinar que {accion ejecutar}3 en el [habitante]4",
+        "La {respuesta}4 es convertida a [senales electricas]5 y enviadas al cerebro"
       ]
     },
     "architecture": {
@@ -24,9 +24,9 @@
   "2": {
     "requirements": {
       "own": [
-        "El [habitante](1) {envia las acciones}(1) que ejecuto a la [simulacion](2)",
-        "La simulacion se encarga de {notificar}(2) a los habitantes afectados",
-        "La simulacion se encarga de {controlar}(3) el [escenario](3)"
+        "El [habitante]1 {envia las acciones}1 que ejecuto a la [simulacion]2",
+        "La [simulacion]2 se encarga de {notificar}2 a los habitantes afectados",
+        "La [simulacion]2 se encarga de {controlar}3 el [escenario]3"
       ],
       "others": [
         "1"
