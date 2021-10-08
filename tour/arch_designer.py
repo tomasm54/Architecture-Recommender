@@ -5,44 +5,53 @@ import es_core_news_lg
 
 doclg = es_core_news_lg.load()
 
-requirements_path = r"architectures_data/compiled_requirements.json"
-architectures_path = r"architectures_data/requirements_architectures.json"
+architectures_path = r"architectures_data/compiled_architectures.json"
 
 with open(architectures_path) as architectures_file:
     architectures_data = json.load(architectures_file)
-
-with open(requirements_path) as requirements_file:
-    requirements_data = json.load(requirements_file)
 
 ENTITY_START = "["
 ENTITY_END = "]"
 MESSAGE_START = "{"
 MESSAGE_END = "}"
-NUMERATOR_START = "("
-NUMERATOR_END = ")"
 
-def compare_req_sintax(arch_req: str, user_req: str) -> bool:
+
+def check_is_tagged(token) -> Tuple[bool, str]:
+    for symbol in [MESSAGE_START, MESSAGE_END, ENTITY_START, ENTITY_END]:
+        if symbol in token:
+            return True, symbol
+
+
+def compare_req_sintax(arch_req: dict, user_req: str) -> bool:
     """
-    Compare if two strings are equals syntactically
+    Compare if two requirements are equals syntactically
+    exact match is considered for no tagged tokens, if they have same:
+    same "es_core_news_lg" spacy model pos_ and dep_
+    for tagged tokens, only equal if tokens between index of no tagged are less
+    or equal to quantity of tokens of original requirement
 
-    FIRST VERSION: two strings are considered equal if they have same:
-    - word qty and order and each has same "es_core_news_lg" spacy model pos_ and dep_
-
-    :param arch_req: structure
-    :param user_req: string 2 to compare
-    :return: True if they are equals, False otherwise
+    :param arch_req: compiled requirement of an architecture
+    :param user_req: user requirement
+    :return: True if they are considered equals, False otherwise
     """
     user_req_tagged = doclg(user_req)
-    arch_req_tagged = doclg(arch_req)
-    tag1_sintax = []
-    tag2_sintax = []
-    for token in arch_req_tagged:
-        tag1_sintax.append(token.pos_)
-        tag1_sintax.append(token.dep_)
-    for token in user_req_tagged:
-        tag2_sintax.append(token.pos_)
-        tag2_sintax.append(token.dep_)
-    return "".join(tag1_sintax) == "".join(tag2_sintax)
+    splatted_arch_req = arch_req["text"].split(" ")
+    subsequences = []
+    actual_sub = []
+    for idx, token in enumerate(splatted_arch_req):
+        is_tagged, symbol = check_is_tagged(token)
+        if is_tagged:
+            actual_sub[0] =
+        else:
+            for user_token in user_req_tagged[idx_start_subsequence:]:
+                if not user_token.pos_+user_token.dep_ == token:
+
+
+
+
+
+
+    return True
 
 
 # load string requirements
@@ -61,7 +70,8 @@ class architecture_designer:
         self.user_requirements = initial_requirements if initial_requirements else []
         self.architectures = []
         self.simple_architectures = [x for x in architectures_data.values() if
-                                     (not x["architecture"]["others"] or len(x["architecture"]["others"]) == 0)]
+                                     "others" not in x["requirements"] or
+                                     len(x["requirements"]["others"]) == 0]
         self.architecture = arch()
 
     def add_requirement(self, requirement: str):
@@ -72,27 +82,39 @@ class architecture_designer:
         resets all fields related to architecture
         """
         self.user_requirements.clear()
+        self.architecture = arch()
 
-    def find_architecture(self) -> Tuple[str, str]:
-        found_architectures = self.find_simple_architectures()
+    def find_architecture(self):
+        self.find_simple_architectures()
 
-    def find_simple_architectures(self) ->:
+    def find_simple_architectures(self):
         """
         Returns all recognized simple architecture, when a simple architecture is a one that not have subarchitecture
         """
-        same_sintax_reqs = 0
         for simple_arch in self.simple_architectures:
+            req_coincidence = False
+            same_sintax_reqs = 0
+            partial_reqs = []
             simple_arch_reqs = simple_arch["requirements"]["own"]  # load string requirements
-            for user_requirement in self.user_requirements:  # for each user requirement
-                for arch_req in simple_arch_reqs:  # for each requirement of the architecture
-                    # check if user requirement match with any arch requirement
+            for arch_req in simple_arch_reqs:  # for each requirement of the architecture
+                req_idx = 0
+                while not req_coincidence and req_idx in self.user_requirements:  # user requirement until match or end
+                    user_requirement = self.user_requirements[req_idx]
+                    # check if user requirement match with arch requirement
                     if compare_req_sintax(user_requirement, arch_req):
                         same_sintax_reqs += 1
-            if same_sintax_reqs == len(arch_reqs) and (arch_id not in recognized_architectures):
-                recognized_architectures.append(arch_id)
-                return arch["architecture"]["type"]
-            same_sintax_reqs = 0
+                        # remove the req to avoid comparision with next reqs
+                        partial_reqs.append(self.user_requirements.pop(req_idx))
+                    req_coincidence = True
+                    req_idx += 1
+            if same_sintax_reqs == len(simple_arch_reqs):
+                print(simple_arch["architecture"]["type"])
+                print(partial_reqs)
+                exit(1)
 
-    def parse_requirement(self, requirement: str) -> dict:
 
-
+des = architecture_designer(["Los datos del cerebro son procesados por la unidad de procesamiento de senales",
+                             "Los datos procesados se envian a action management para determinar que accion "
+                             "ejecutar en el habitante"])
+des.add_requirement("La respuesta es convertida a senales electricas y enviadas al cerebro")
+des.find_architecture()

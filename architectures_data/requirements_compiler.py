@@ -24,8 +24,7 @@ def parse_end_of_tagged(token, parsed_phrase: List, end_of_tagged: str):
     token_before_end = False
     splatted_end_ref = token.text.split(end_of_tagged)  # ["",234]
     splatted_end_ref.append(end_of_tagged)  # ["",234,}] or ["",234,]]
-    parsed_phrase.append(splatted_end_ref[1])  # add reference number
-    parsed_phrase.append(splatted_end_ref[2])  # add } or ]
+    parsed_phrase.extend([splatted_end_ref[1], splatted_end_ref[2], " "])  # add reference number, end symbol and space
     if splatted_end_ref[0] != "":  # bad tagged, space before ] example [hi ]234
         token_before_end = True
     return token_before_end, splatted_end_ref[1]
@@ -43,8 +42,8 @@ def parse_phrase_structure(phrase_to_parse: str) -> Tuple[str, Dict, Dict]:
                 parsed_phrase.append(token.text)  # add [ or {
                 appendable = False  # word between [] or {} are not considered
             else:
-                parsed_phrase.extend([token.pos_, token.dep_])  # add necessary word info. examples DETdet NOUNnsubj
-                # ADPcase
+                parsed_phrase.extend([token.pos_, token.dep_, " "])  # add necessary word info. examples DETdet
+                # NOUNnsubj ADPcase
         else:
             """
             spacy tokenize "hi [helicopter]/}1" -> hi, [, helicopter]/}1
@@ -65,7 +64,7 @@ def parse_phrase_structure(phrase_to_parse: str) -> Tuple[str, Dict, Dict]:
             else:  # common word, only count
                 tag_words_qty += 1
 
-    return ''.join(parsed_phrase), tagged_message, tagged_entity
+    return ''.join(parsed_phrase[:-1]), tagged_message, tagged_entity
 
 
 for index in data.keys():  # for each arq

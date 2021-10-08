@@ -2,9 +2,9 @@
   "1": {
     "requirements": {
       "own": [
-        "DETdet{1}ADPcase[1]AUXauxVERBROOTADPcaseDETdet[2]",
-        "DETdet{2}PRONobjVERBROOTADPcase[3]ADPmarkVERBadvclSCONJmark{3}ADPcaseDETdet[4]",
-        "DETdet{4}AUXauxVERBROOTADPcase[5]CCONJccADJconjADPcaseNOUNobj"
+        "DETdet {1} ADPcase [1] AUXaux VERBROOT ADPcase DETdet [2]",
+        "DETdet {2} PRONobj VERBROOT ADPcase [3] ADPmark VERBadvcl SCONJmark {3} ADPcase DETdet [4]",
+        "DETdet {4} AUXaux VERBROOT ADPcase [5] CCONJcc ADJconj ADPcase NOUNobj"
       ],
       "tagged_entity": {
         "1": 1,
@@ -37,9 +37,9 @@
   "2": {
     "requirements": {
       "own": [
-        "DETdet[1]{1}PRONnsubjVERBaclADPcaseDETdet[2]",
-        "DETdet[2]PRONobjVERBROOTADPcase{2}ADPcaseDETdetNOUNobjADJamod",
-        "DETdet[2]PRONobjVERBROOTADPcase{3}DETdet[3]"
+        "DETdet [1] {1} PRONnsubj VERBacl ADPcase DETdet [2]",
+        "DETdet [2] PRONobj VERBROOT ADPcase {2} ADPcase DETdet NOUNobj ADJamod",
+        "DETdet [2] PRONobj VERBROOT ADPcase {3} DETdet [3]"
       ],
       "others": [
         "1"
