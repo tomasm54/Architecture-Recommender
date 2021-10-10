@@ -1,82 +1,35 @@
+import itertools
 import json
-from typing import Optional
+from typing import Optional, List
+import requests
 
-import es_core_news_lg
-
-doclg = es_core_news_lg.load()
-
-requirements_path = r"architectures_data/compiled_requirements.json"
-architectures_path = r"architectures_data/requirements_architectures.json"
-last_arch_path = r"architectures_data/last_arch.json"
-
-with open(architectures_path) as architectures_file:
-    architectures_data = json.load(architectures_file)
-
-with open(requirements_path) as requirements_file:
-    requirements_data = json.load(requirements_file)
-
-user_requirements = []
-recognized_architectures = []
+NLU_URL = "http://localhost:5001/model/parse"
 
 
-def compare_str_sintax(str1: str, str2: str) -> bool:
-    """
-    Compare if two strings are equals sintactically
+class architecture_finder:
+    def __init__(self, requirements: Optional[List]):
+        self.user_requirements = requirements if requirements else []
 
-    FIRST VERSION: two strings are considered equal if they have same:
-    - word qty and order and each has same "es_core_news_lg" spacy model pos_ and dep_
+    def add_requirement(self, requirement: str):
+        self.user_requirements.append(requirement)
 
-    :param str1: string 1 to compare
-    :param str2: string 2 to compare
-    :return: True if they are equals, False otherwise
-    """
-    tag1 = doclg(str1)
-    tag2 = doclg(str2)
-    tag1_sintax = []
-    tag2_sintax = []
-    for token in tag1:
-        tag1_sintax.append(token.pos_)
-        tag1_sintax.append(token.dep_)
-    for token in tag2:
-        tag2_sintax.append(token.pos_)
-        tag2_sintax.append(token.dep_)
-    return "".join(tag1_sintax) == "".join(tag2_sintax)
+    def find_architecture(self) -> str:
+        arch = ""
+        reqs = []
+        arch_confidence = 0
+        text = ""
+        for r in range(2, len(self.user_requirements) + 1):
+            for reqs_combination in list(itertools.combinations(self.user_requirements, r)):
+                for req in reqs_combination:
+                    text += req+", "
+                response = requests.post(NLU_URL, data=json.dumps({"text": text})).json()
+                if response["intent"]["confidence"] > arch_confidence or \
+                    (response["intent"]["confidence"] == arch_confidence and len(reqs) < len(reqs_combination)):
+                    arch = response["intent"]["name"]
+                    reqs = reqs_combination
+                    req_confidence = response["intent"]["confidence"]
+                text = ""
+        return arch
 
-
-# load string requirements
-def load_requirements(values: dict) -> list:
-    requirements = []
-    if "others" in values["requirements"]:
-        for other_req in values["requirements"]["others"]:
-            requirements.extend(load_requirements(architectures_data[other_req]))
-    requirements.extend(values["requirements"]["own"])  # MINIMUM ONE AT THE MOMENT
-    return requirements
-
-
-def find_architecture(last_requirement: str) -> Optional[str]:
-    """
-    Returns an architecture if are recognized with last requirement @message
-    """
-    user_requirements.append(last_requirement)  # add last requirement to requirements list
-    # for each "case" (requirements set - architecture) check if all reqs have same sintax to match an architecture
-    same_sintax_reqs = 0
-    for arch_id, arch in architectures_data.items():  # for each architecture
-        arch_reqs = load_requirements(arch)
-        for requirement in user_requirements:  # for each user requirement
-            for arch_req in arch_reqs:  # for each requirement of the architecture
-                # check if any user requirement match with arch requirement
-                if compare_str_sintax(requirement, arch_req):
-                    same_sintax_reqs += 1
-        if same_sintax_reqs == len(arch_reqs) and (arch_id not in recognized_architectures):
-            recognized_architectures.append(arch_id)
-            with open(last_arch_path, 'w') as outfile:
-                json.dump({"name": arch["architecture"]["type"]}, outfile)
-            return arch["architecture"]["type"]
-        same_sintax_reqs = 0
-
-    return None
-
-
-def get_last_detected_arch():
-    with open(last_arch_path) as last_file:
-        return json.load(last_file)["name"]
+    def clear_requirements(self):
+        self.user_requirements.clear()

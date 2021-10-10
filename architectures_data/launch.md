@@ -1,0 +1,1 @@
+rasa run --enable-api --cors “*” --debug -p 5001 -m models/nlu-20211010
