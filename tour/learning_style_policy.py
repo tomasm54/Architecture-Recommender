@@ -1,7 +1,7 @@
 import json
 import logging
 from tour.loading_script import functions_builder
-from tour.chain.node import Node, DefaultNode, NodeActionListen,  NodeExample,  NodeNext, NodeRepeat
+from tour.chain.node import Node, DefaultNode, NodeActionListen,  NodeNext, NodeRepeat
 from tour.chain.criterion import AndCriterion, EqualAction, EqualEntity, EqualIntent, EqualPenultimateIntent, \
     NotCriterion, OrCriterion
 
@@ -19,7 +19,7 @@ from rasa.shared.core.generator import TrackerWithCachedStates
 
 from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.topic.topics import parse_topic
-from tour.conversation_flow.concrete_learning_styles_flows import Global, Sequential, Neutral
+from tour.conversation_flow.concrete_learning_styles_flows import Global, Sequential
 
 logger = logging.getLogger(__name__)
 
@@ -76,13 +76,6 @@ class LearningStylePolicy(Policy):
             **kwargs: Any,
     ) -> None:
         super().__init__(featurizer, priority, **kwargs)
-        #self.story_profiles = story_profiles if story_profiles is not None else {}
-        #self.usertype = usertype if usertype is not None else {}
-        #self.learning_style = learning_style if learning_style is not None else DEFAULT_LEARNING_STYLE
-        #create_learning_style_flows(self.learning_style_flows)
-        #self._it = self.learning_style_flows["neutral"]
-        self._criterion_learning = AndCriterion(NotCriterion(EqualPenultimateIntent("utter_cross_examine")),
-                                                EqualAction("action_listen"))
         # to do script
         self._functions = functions_builder()
         self._users  = {}
@@ -121,8 +114,6 @@ class LearningStylePolicy(Policy):
                 self._users[id] = Sequential({},[])
 
         return self._prediction(confidence_scores_for(self._functions.next(self._users[id], tracker), 1.0, domain))
-
-        # return self._prediction(confidence_scores_for("action_listen", 1.0, domain))
 
     def _metadata(self) -> Dict[Text, Any]:
         return {
