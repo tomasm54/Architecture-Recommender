@@ -1,5 +1,5 @@
 import json
-from tour.topic.topics import Topic, parse_topic
+from tour.topic.topics import Topic
 from typing import Dict, List
 from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour.visitor.visitor import Visitor
@@ -53,27 +53,4 @@ class Global(ConversationFlow):
         """
         return visitor.visit_global(self)
 
-
-class Neutral(ConversationFlow):
-
-    def __init__(self, intents_to_topics: Dict[str, str], flow: List[Topic]):
-        """
-        Global learning style constructor.
-
-        Author: Tomas
-        """
-        super().__init__(intents_to_topics, flow)
-
-    def accept(self, visitor: Visitor) -> str:
-        """
-        Accepts the visitor
-
-        Author: Tomas
-
-        Returns
-        -------
-
-        Utter associated to the visitor functionality.
-        """
-        return visitor.visit_neutral(self)
 

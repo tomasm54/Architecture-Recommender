@@ -1,22 +1,25 @@
 [
   {
-    "topic_id": "proceso_scrum",
-    "type": "simple",
-    "utters": [
-      "utter_proceso_scrum"
-    ],
-    "sub_topics": [
-      {
-      "topic_id": "product_backlog",
+      "topic_id": "scrum_abstract",
       "type": "simple",
       "utters": [
-          "utter_product_backlog"
+          "utter_scrum_abstract"
+      ],
+      "sub_topics": [
+          {
+          "topic_id": "scrum_concrete_1",
+          "type": "simple",
+          "utters": [
+              "utter_scrum_concrete_1"
+          ]
+          },
+          {
+          "topic_id": "scrum_concrete_2",
+          "type": "simple",
+          "utters": [
+              "utter_scrum_concrete_2"
+          ]
+          }
       ]
-      }
-    ],
-    "questions": [
-      "utter_cross_examine_tema_proceso_scrum", 
-      "deny" 
-    ] 
   }
 ]

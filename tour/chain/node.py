@@ -7,10 +7,7 @@ from tour.visitor.next_topic import NextTopic
 from rasa.shared.core.trackers import DialogueStateTracker
 
 from tour.chain.criterion import Criterion
-from tour.visitor.get_topic import GetTopic
 from tour.conversation_flow.conversation_flow import ConversationFlow
-from tour.visitor.ask import Ask
-from tour.visitor.example import Example
 from tour import arch_designer
 
 
@@ -50,6 +47,18 @@ class Node(metaclass=abc.ABCMeta):
             Rasa tracker.
         """
         raise NotImplementedError
+
+class NodeUtter(Node):
+    def __init__(self, node: Node, criterion: Criterion, utter: str) -> None:
+        super().__init__(criterion)
+        self._node = node
+        self._utter = utter
+    
+    def next(self, it: ConversationFlow, tracker: DialogueStateTracker) -> str:
+        if self._criterion.check(it, tracker):
+            return self._utter
+        else:
+            return self._node.next(it, tracker)
 
 class NodeExplainArchitecture(Node):
     
@@ -312,48 +321,3 @@ class NodeNext(Node):
             return it.accept(NextTopic())
         else:
             return self._node.next(it, tracker)
-
-
-
-class NodeExample(Node):
-    """
-    Node that calls the Example visitor if the criterion is checked as true, otherwise it checks the next node.
-
-    Author: Adrian
-    """
-    def __init__(self, node: Node, criterion: Criterion) -> None:
-        """
-        Constructor of the node
-
-        Author: Adrian
-
-        Parameters
-        ----------
-
-        node
-            Next node.
-        criterion
-            Criterion to check if it has to make the functionality specified in the node or it has to go to the next node.
-        """
-        self._node = node
-        super().__init__(criterion)
-
-    def next(self, it: ConversationFlow, tracker: DialogueStateTracker) -> str:
-        """
-        Calls the Example visitor if the criterion is checked as true, otherwise it checks the next node.
-
-        Author: Adrian
-
-        Parameters
-        ----------
-
-        it
-            Current conversation_flow to iterate over the conversation flow.
-        tracker
-            Rasa tracker.
-        """
-        if self._criterion.check(it,tracker):
-            return it.accept(Example(next(tracker.get_latest_entity_values("tema"), None)))
-        else:
-            return self._node.next(it, tracker)
-
