@@ -10,6 +10,7 @@ intents:
   - explicame_tema
   - dame_ejemplo
   - change_current_flow
+  - dar_requerimientos
 
 entities:
   - tema
@@ -51,9 +52,10 @@ responses:
     - text: "termino la explicacion"
 
   utter_architecture:
-    - text: "A R Q U I T E C T U R A"
+    - text: "encontre arquitectura"
+
   utter_no_architecture:
-    - text: "No hay arquitectura todavia"
+    - text: "Todavia no encontre una arquitectura para recomendarte"
   
   utter_requirement:
     - text: "Dale mandale requerimientos"

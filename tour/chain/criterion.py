@@ -14,6 +14,13 @@ class EmptyFlow(Criterion):
     def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
         return not it.has_flow()
 
+class EqualMessage(Criterion):
+
+    def __init__(self, compare: str) -> None:
+        self._compare = compare
+    
+    def check(self, it: ConversationFlow, tracker: DialogueStateTracker) -> bool:
+        return self._compare == tracker.latest_message.text
 
 class EqualIntent(Criterion):
     """

@@ -1,0 +1,16 @@
+version: "2.0"
+
+nlu:
+  - intent: pipe
+    examples: |
+      - Los mensajes se obtienen de la api de [whatsapp](COMPONENT), a los mensajes se les elimina la metadata en [cleaner](COMPONENT), los mensajes sin metadata se dividen segun intencion en el [categorizador](COMPONENT)
+      - Las transacciones se extraen de un servicio del [banco](COMPONENT), las transacciones se agrupan por destinatario en el [agrupador](COMPONENT), las transacciones agrupadas se suman en el [sumador](COMPONENT)
+
+  - intent: layers
+    examples: |
+      - los datos del [cerebro](COMPONENT) son procesados por la [unidad de procesamiento de senales](COMPONENT), los datos procesados se envian a [action management](COMPONENT) para determinar que accion ejecutar en el [habitante](COMPONENT), la respuesta es convertida a [senales electricas](COMPONENT) y enviadas al [cerebro](COMPONENT)
+      - los montos de las transacciones del [cajero](COMPONENT) son enviadas a [verificador de rangos](COMPONENT), los montos en rango correcto se consultan en la [cuenta del banco](COMPONENT), los productos disponibles en la       [cuenta del banco](COMPONENT) son analizados segun el [perfilador](COMPONENT) y luego mostrados en el [cajero](COMPONENT)
+
+  - intent: tiers
+    examples: |
+      - [layers](PATTERN), el [habitante](COMPONENT) envia las acciones que ejecuto a la [simulacion](COMPONENT), la [simulacion](COMPONENT) se encarga de notificar a los [habitantes](COMPONENT) afectados, la [simulacion](COMPONENT) se encarga de controlar el [escenario](COMPONENT)
