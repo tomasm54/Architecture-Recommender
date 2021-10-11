@@ -1,6 +1,6 @@
 import abc
 import json
-from tour.arch_designer import find_architecture
+from tour.arch_designer import architecture_finder
 from tour.topic.topics import parse_topic
 from tour.visitor.next_topic import NextTopic
 
@@ -10,6 +10,7 @@ from tour.chain.criterion import Criterion
 from tour.conversation_flow.conversation_flow import ConversationFlow
 from tour import arch_designer
 
+architecture_finder_var = architecture_finder()
 
 class Node(metaclass=abc.ABCMeta):
     """
@@ -69,7 +70,7 @@ class NodeExplainArchitecture(Node):
     
     def next(self, it: ConversationFlow, tracker: DialogueStateTracker) -> str:
         if self._criterion.check(it, tracker):
-            arch = arch_designer.get_last_detected_arch()
+            arch = architecture_finder_var.find_architecture()
             with open(self._flows[arch]) as file:
                 flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
             it.load(flow)
@@ -86,7 +87,9 @@ class NodeRequirement(Node):
     
     def next(self, it: ConversationFlow, tracker: DialogueStateTracker) -> str:
         if self._criterion.check(it,tracker):
-            arch = find_architecture(tracker.latest_message.text)
+            architecture_finder_var.add_requirement(tracker.latest_message.text)
+            arch = architecture_finder_var.find_architecture()
+            print(arch)
             if arch is None:
                 return "utter_no_architecture"
             else:
@@ -115,7 +118,7 @@ class NodeExplain(Node):
                     with open(self._flows[tema]) as file:
                         flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
                     it.load(flow)
-                    return "utter_architecture"
+                    return it.accept(NextTopic())
                 else:
                     return "utter_no_explain"               
         else:

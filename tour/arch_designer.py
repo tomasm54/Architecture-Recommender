@@ -37,6 +37,7 @@ class architecture_finder:
                     for req in reqs_combination:
                         text += req + ", "
                     response = requests.post(NLU_URL, data=json.dumps({"text": text})).json()
+                    print(response)
                     if response["intent"]["confidence"] > arch_confidence or \
                             (response["intent"]["confidence"] == arch_confidence and
                              len(found_arch_reqs) < len(reqs_combination)):
@@ -57,10 +58,7 @@ class architecture_finder:
 
 
 a = architecture_finder()
-a.add_requirement("Los datos del cerebro son procesados por la unidad de procesamiento de senales")
-a.add_requirement(
-    "Los datos procesados se envian a action management para determinar que accion ejecutar en el habitante")
-a.add_requirement("La respuesta es convertida a senales electricas y enviadas al cerebro")
-a.add_requirement("El habitante envia las acciones que ejecuto a la simulacion")
+a.add_requirement("los montos de las transacciones del cajero son enviadas a verificador de rangos, los montos en rango correcto se consultan en la cuenta del banco, los productos disponibles en la  cuenta del banco son analizados segun el perfilador y luego mostrados en el cajero")
+a.add_requirement("los datos del cerebro son procesados por la unidad de procesamiento de senales, los datos procesados se envian a action management para determinar que accion ejecutar en el habitante, la respuesta es convertida a senales electricas y enviadas al cerebro")
 
 a.find_architecture()
