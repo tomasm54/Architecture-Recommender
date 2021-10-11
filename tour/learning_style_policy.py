@@ -106,13 +106,13 @@ class LearningStylePolicy(Policy):
     ) -> PolicyPrediction:
         id = tracker.current_state()['sender_id']
         if id not in self._users:
-            #var = tracker.current_state()["latest_message"]
-            #metadata = var["metadata"]
-            #personality = metadata["personality"]
-            #if personality == "global":
+            var = tracker.current_state()["latest_message"]
+            metadata = var["metadata"]
+            personality = metadata["personality"]
+            if personality == "global":
                 self._users[id] = Global({},[])
-            #else:
-            #    self._users[id] = Sequential({},[])
+            else:
+                self._users[id] = Sequential({},[])
 
         return self._prediction(confidence_scores_for(self._functions.next(self._users[id], tracker), 1.0, domain))
 

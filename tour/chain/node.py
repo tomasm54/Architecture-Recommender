@@ -70,7 +70,7 @@ class NodeExplainArchitecture(Node):
     
     def next(self, it: ConversationFlow, tracker: DialogueStateTracker) -> str:
         if self._criterion.check(it, tracker):
-            arch = architecture_finder_var.find_architecture()
+            arch = architecture_finder_var.get_last_architecture()
             with open(self._flows[arch]) as file:
                 flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]
             it.load(flow)
@@ -89,7 +89,6 @@ class NodeRequirement(Node):
         if self._criterion.check(it,tracker):
             architecture_finder_var.add_requirement(tracker.latest_message.text)
             arch = architecture_finder_var.find_architecture()
-            print(arch)
             if arch is None:
                 return "utter_no_architecture"
             else:
@@ -113,7 +112,6 @@ class NodeExplain(Node):
             if tema is None:
                 return "utter_no_tema"
             else:
-                print(tema)
                 if tema in self._flows:
                     with open(self._flows[tema]) as file:
                         flow = [parse_topic(raw_topic) for raw_topic in json.load(file)]

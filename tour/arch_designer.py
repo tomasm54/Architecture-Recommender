@@ -30,14 +30,13 @@ class architecture_finder:
         found_arch_name = ""
         found_arch_reqs = []
         arch_confidence = 0
-        if len(self.user_requirements) > 1:
-            for r in range(2, len(self.user_requirements) + 1):
+        if len(self.user_requirements) > 2:
+            for r in range(3, len(self.user_requirements) + 1):
                 for reqs_combination in list(itertools.combinations(self.user_requirements, r)):
                     text = ""
                     for req in reqs_combination:
                         text += req + ", "
                     response = requests.post(NLU_URL, data=json.dumps({"text": text})).json()
-                    print(response)
                     if response["intent"]["confidence"] > arch_confidence or \
                             (response["intent"]["confidence"] == arch_confidence and
                              len(found_arch_reqs) < len(reqs_combination)):
@@ -55,10 +54,8 @@ class architecture_finder:
 
     def clear_requirements(self):
         self.user_requirements.clear()
+        self.found_architectures.clear()
 
+    def get_last_architecture(self) -> Optional[str]:
+        return self.found_architectures[len(self.found_architectures.keys())]["name"] if len(self.found_architectures.keys()) > 0 else None
 
-a = architecture_finder()
-a.add_requirement("los montos de las transacciones del cajero son enviadas a verificador de rangos, los montos en rango correcto se consultan en la cuenta del banco, los productos disponibles en la  cuenta del banco son analizados segun el perfilador y luego mostrados en el cajero")
-a.add_requirement("los datos del cerebro son procesados por la unidad de procesamiento de senales, los datos procesados se envian a action management para determinar que accion ejecutar en el habitante, la respuesta es convertida a senales electricas y enviadas al cerebro")
-
-a.find_architecture()
